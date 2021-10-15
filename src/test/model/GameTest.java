@@ -31,9 +31,21 @@ class GameTest {
         game.enterValidWord("upyx");
         assertEquals("upyx", game.getWordEntryList().get(3).getWord());
         assertEquals(16, game.getWordEntryList().get(3).getWordValue());
-        game.enterValidWord("qzqz");
-        assertEquals("qzqz", game.getWordEntryList().get(4).getWord());
-        assertEquals(40, game.getWordEntryList().get(4).getWordValue());
+        game.enterValidWord("jxqz");
+        assertEquals("jxqz", game.getWordEntryList().get(4).getWord());
+        assertEquals(36, game.getWordEntryList().get(4).getWordValue());
+
+        Game newGame = new Game();
+        newGame.enterValidWord("fhvw");
+        assertEquals("fhvw", newGame.getWordEntryList().get(0).getWord());
+        assertEquals(16, newGame.getWordEntryList().get(0).getWordValue());
+        newGame.enterValidWord("eibm");
+        assertEquals("eibm", newGame.getWordEntryList().get(1).getWord());
+        assertEquals(8, newGame.getWordEntryList().get(1).getWordValue());
+        newGame.enterValidWord("ontl");
+        assertEquals("ontl", newGame.getWordEntryList().get(2).getWord());
+        assertEquals(4, newGame.getWordEntryList().get(2).getWordValue());
+
     }
 
     @Test
