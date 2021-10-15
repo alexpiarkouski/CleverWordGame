@@ -109,6 +109,7 @@ public class WordGame {
         input.useDelimiter("\n");
     }
 
+    // modified from TellerApp
     // EFFECTS: displays menu of options to user
     private void displayMenu() {
         System.out.println("\nSelect from:");
