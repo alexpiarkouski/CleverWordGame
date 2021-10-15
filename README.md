@@ -19,7 +19,7 @@ The game is meant to be an engaging game-form exercise for a wide audience willi
 As for my interest in the project, I consider myself a member of all 3 groups mentioned above. The idea for the project came to me during a game of *Anagrams* on my phone, which accurately shows how much I enjoy word games. English is also my third language and word games have been very helpful in practicing newly acquired vocabulary and learning new words for me. Finally I write a bit in my free time, so challenging myself in the vocabulary regard sounds interesting to me. This game is a fun, useful, and relatively complex project that can be complicated and improved almost infinitely, adding new restriction, levels, game modes, and visual improvements. All things mentioned have challenged me to attempt this project.    
 
 ## User Stories
-- As a user, I would like to be able to input multiple words in one round 
+- As a user, I would like to be able to input and view multiple word entries in one round 
 - As a user, I would like to be able to exit a game 
 - As a user, I would like to be able to view my total score, after the game round is finished  
 - As a user, I would like to be able to see the list of input words along with their corresponding point values at the end of the game round.
