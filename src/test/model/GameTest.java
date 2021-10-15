@@ -45,6 +45,7 @@ class GameTest {
     @Test
     void testAssignLetterPoints() {
         assertEquals(1, game.assignLetterPoints('a'));
+        assertEquals(4, game.assignLetterPoints('w'));
         assertEquals(10, game.assignLetterPoints('z'));
         assertEquals(0, game.assignLetterPoints('1'));
         assertEquals(0, game.assignLetterPoints(' '));
@@ -62,10 +63,12 @@ class GameTest {
 
     @Test
     void testCheckIfWordValid() {
-        assertTrue(game.checkIfWordInList("cats") & game.checkLetterNum("cats"));
-        assertFalse(game.checkIfWordInList("cat") & game.checkLetterNum("cat"));
-        assertFalse(game.checkIfWordInList("monkey") & game.checkLetterNum("monkey"));
-        assertFalse(game.checkIfWordInList("12345 ") & game.checkLetterNum("12345 "));
+        assertEquals(game.checkIfWordInList("cats") && game.checkLetterNum("cats"),
+                game.checkIfWordValid("cats"));
+        assertEquals(game.checkIfWordInList("cat") && game.checkLetterNum("cat"),
+                game.checkIfWordValid("cat"));
+        assertEquals(false, game.checkIfWordValid("monkey"));
+        assertEquals(false, game.checkIfWordValid("fax123"));
     }
 
     @Test
@@ -83,5 +86,12 @@ class GameTest {
         assertFalse(game.checkLetterNum(""));
         assertFalse(game.checkLetterNum("monkey"));
         assertTrue(game.checkLetterNum("    "));
+    }
+
+    @Test
+    void testGetLetterNum() {
+        assertEquals(4, game.getLetterNum());
+        Game newGame = new Game();
+        assertEquals(4, newGame.getLetterNum());
     }
 }
