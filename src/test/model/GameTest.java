@@ -46,6 +46,7 @@ class GameTest {
     void testAssignLetterPoints() {
         assertEquals(1, game.assignLetterPoints('a'));
         assertEquals(4, game.assignLetterPoints('w'));
+        assertEquals(8, game.assignLetterPoints('j'));
         assertEquals(10, game.assignLetterPoints('z'));
         assertEquals(0, game.assignLetterPoints('1'));
         assertEquals(0, game.assignLetterPoints(' '));
@@ -68,15 +69,18 @@ class GameTest {
         assertEquals(game.checkIfWordInList("cat") && game.checkLetterNum("cat"),
                 game.checkIfWordValid("cat"));
         assertEquals(false, game.checkIfWordValid("monkey"));
-        assertEquals(false, game.checkIfWordValid("fax123"));
+        assertEquals(false, game.checkIfWordValid("abcdefghijklmnopqrstuvwxyz"));
+        assertEquals(game.checkIfWordInList("9999") && game.checkLetterNum("9999"),
+                game.checkIfWordValid("9999"));
     }
 
     @Test
-    // Work in progress - method returns true by default for now
+    // Work in progress - method returns true by default for now except false for "9999" - testing purposes
     void testCheckIfWordInList() {
         assertTrue(game.checkIfWordInList(""));
         assertTrue(game.checkIfWordInList("abc"));
         assertTrue(game.checkIfWordInList("123"));
+        assertFalse(game.checkIfWordInList("9999"));
     }
 
     @Test

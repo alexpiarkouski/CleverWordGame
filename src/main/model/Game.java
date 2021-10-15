@@ -86,8 +86,13 @@ public class Game {
     // EFFECTS: returns true if given word is found in the eligible word list
     // Note: stub, work in progress
     public boolean checkIfWordInList(String thisWord) {
-        return true; //stub
+        if (thisWord == "9999") { //testing stub
+            return false;
+        } else {
+            return true;
+        }
     }
+
 
     // EFFECTS: returns true if given word is of correct character length
     public boolean checkLetterNum(String thisWord) {
