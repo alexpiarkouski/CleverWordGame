@@ -28,6 +28,12 @@ class GameTest {
         assertEquals(prevAttempts - 3, game.getAttempts());
         assertEquals("park", game.getWordEntryList().get(2).getWord());
         assertEquals(10, game.getWordEntryList().get(2).getWordValue());
+        game.enterValidWord("upyx");
+        assertEquals("upyx", game.getWordEntryList().get(3).getWord());
+        assertEquals(16, game.getWordEntryList().get(3).getWordValue());
+        game.enterValidWord("qzqz");
+        assertEquals("qzqz", game.getWordEntryList().get(4).getWord());
+        assertEquals(40, game.getWordEntryList().get(4).getWordValue());
     }
 
     @Test
@@ -44,9 +50,9 @@ class GameTest {
 
     @Test
     void testAssignLetterPoints() {
-        assertEquals(1, game.assignLetterPoints('a'));
-        assertEquals(4, game.assignLetterPoints('w'));
-        assertEquals(8, game.assignLetterPoints('j'));
+        assertEquals(1, game.assignLetterPoints('u'));
+        assertEquals(4, game.assignLetterPoints('y'));
+        assertEquals(8, game.assignLetterPoints('x'));
         assertEquals(10, game.assignLetterPoints('z'));
         assertEquals(0, game.assignLetterPoints('1'));
         assertEquals(0, game.assignLetterPoints(' '));
