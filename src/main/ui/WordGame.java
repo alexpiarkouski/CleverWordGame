@@ -1,17 +1,26 @@
 package ui;
 
 import model.Game;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 // Clever Word Game app
 public class WordGame {
 
+    // Some fields modified from WorkRoomApp
+    private static final String JSON_STORE = "./data/game.json";
     private Scanner input;
     private Game game;
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
 
+    // Modified from WorkRoomApp
     // EFFECTS: runs the Word Game app
-    public WordGame() {
+    public WordGame() throws FileNotFoundException {
         runWordGame();
     }
 
@@ -39,27 +48,50 @@ public class WordGame {
         System.out.println("\nGoodbye!");
     }
 
-    // modified from TellerApp
+    // modified from TellerApp and WorkRoomApp
     // MODIFIES: this
-    // EFFECTS: processes user command. If player has 0 attempts and wishes to play again constructs a new game
+    // EFFECTS: processes user command. If player wishes to play constructs a new game and proceeds to play
     private void processCommand(String command) {
         if (command.equals("play")) {
-            if (game.getAttempts() == 0) {
-                System.out.println("Scores and attempts reset succesfully. You can start a new game now.");
-                game = new Game();
-            } else {
-                playGame();
-                endGameMessage();
-            }
-        } else if (command.equals("reset")) {
-            System.out.println("Scores and attempts reset succesfully");
             game = new Game();
+            playGame();
+            endGameMessage();
         } else if (command.equals("score")) {
             lastScore();
         } else if (command.equals("last_game")) {
             lastGame();
+        } else if (command.equals("save")) {
+            saveGame();
+        } else if (command.equals("load")) {
+            loadGame();
         } else {
             System.out.println("Selection not valid...");
+        }
+    }
+
+
+    // Modified from WorkRoomApp
+    // EFFECTS: saves game to file
+    private void saveGame() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(game);
+            jsonWriter.close();
+            System.out.println("Saved game with score " + game.getScore() + " to " + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE);
+        }
+    }
+
+    // Modified from WorkRoomApp
+    // MODIFIES: this
+    // EFFECTS: loads game from file
+    private void loadGame() {
+        try {
+            game = jsonReader.read();
+            System.out.println("Loaded game with score " + game.getScore() + " from " + JSON_STORE);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE);
         }
     }
 
@@ -100,13 +132,13 @@ public class WordGame {
         getWordEntries();
     }
 
-    // modified from TellerApp
+    // modified from TellerApp and WorkRoomApp
     // MODIFIES: this
-    // EFFECTS: initializes accounts
+    // EFFECTS: initializes Scanner and Json Reader and Writer
     private void init() {
-        game = new Game();
         input = new Scanner(System.in);
-        input.useDelimiter("\n");
+        jsonWriter = new JsonWriter(JSON_STORE);
+        jsonReader = new JsonReader(JSON_STORE);
     }
 
     // modified from TellerApp
@@ -114,9 +146,10 @@ public class WordGame {
     private void displayMenu() {
         System.out.println("\nSelect from:");
         System.out.println("\tplay -> play game");
-        System.out.println("\treset -> restart game");
         System.out.println("\tscore -> view last score");
         System.out.println("\tlast_game -> see last game");
+        System.out.println("\tsave -> save last game to file");
+        System.out.println("\tload -> load last game from file");
         System.out.println("\tquit_game -> quit game");
     }
 

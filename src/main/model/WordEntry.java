@@ -1,9 +1,12 @@
 package model;
 
+import org.json.JSONObject;
+import persistence.Writable;
+
 import java.util.ArrayList;
 
 // Represents a word entry consisting of a word and the points it is worth
-public class WordEntry {
+public class WordEntry implements Writable {
     private String word; //word entered
     private int wordValue; //points value of all characters in a word
 
@@ -22,6 +25,14 @@ public class WordEntry {
     //EFFECTS: Returns the word string in a wordEntry
     public String getWord() {
         return word;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("word", word);
+        json.put("word value", wordValue);
+        return json;
     }
 
 

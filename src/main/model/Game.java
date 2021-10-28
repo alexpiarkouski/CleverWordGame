@@ -1,10 +1,14 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 // Represents a Clever Word Game round
-public class Game {
+public class Game implements Writable {
     private int score;
     private int attempts;
     private int letterNum;
@@ -25,7 +29,7 @@ public class Game {
     // word entry added to list of word entries, score is updated, an attempt is subtracted
     public void enterValidWord(String word) {
         WordEntry wordEntry = new WordEntry(word, assignWordValue(word));
-        wordEntries.add(wordEntry);
+        addWordEntry(wordEntry);
         updateScore(wordEntry.getWordValue());
         attempts--;
     }
@@ -86,17 +90,44 @@ public class Game {
     // EFFECTS: returns true if given word is found in the eligible word list
     // Note: stub, work in progress
     public boolean checkIfWordInList(String thisWord) {
-        if (thisWord == "9999") { //testing stub
+        if (thisWord.equals("9999")) { //testing stub
             return false;
         } else {
             return true;
         }
     }
 
+    // Modified from WorkRoomApp
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("score", score);
+        json.put("word entries", wordEntriesToJson());
+        return json;
+    }
+
+    // Modified from WorkRoomApp
+    // EFFECTS: returns wordEntries in this game as a JSON array
+    private JSONArray wordEntriesToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (WordEntry wordEntry : wordEntries) {
+            jsonArray.put(wordEntry.toJson());
+        }
+
+        return jsonArray;
+    }
+
 
     // EFFECTS: returns true if given word is of correct character length
     public boolean checkLetterNum(String thisWord) {
         return thisWord.length() == letterNum;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: adds wordEntry into the list of wordEntries
+    public void addWordEntry(WordEntry wordEntry) {
+        wordEntries.add(wordEntry);
     }
 
     // REQUIRES: score is a nonnegative integer
@@ -121,4 +152,5 @@ public class Game {
     public List<WordEntry> getWordEntryList() {
         return wordEntries;
     }
+
 }

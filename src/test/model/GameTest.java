@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// Test class for Game
 class GameTest {
 
     private Game game;
@@ -45,7 +46,6 @@ class GameTest {
         newGame.enterValidWord("ontl");
         assertEquals("ontl", newGame.getWordEntryList().get(2).getWord());
         assertEquals(4, newGame.getWordEntryList().get(2).getWordValue());
-
     }
 
     @Test

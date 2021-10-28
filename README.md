@@ -26,7 +26,5 @@ As for my interest in the project, I consider myself a member of all 3 groups me
 - As a user, I would like to be able to see the list of input words along with their corresponding point values at the end of the game round.
 
 **Phase 2**
-- As a user, I want to be able to save my last score and last list of input words along with their corresponding point
-values to file
-- As a user, I want to be able to be able to load my my last score and last list of input words along with their
-corresponding point values from file 
+- As a user, I want to be able to save my last score and last list of input words along with their corresponding point values to file
+- As a user, I want to be able to be able to load my last saved score and last saved list of input words along with their corresponding point values from file. 
