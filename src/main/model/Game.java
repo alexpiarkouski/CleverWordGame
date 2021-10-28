@@ -71,7 +71,7 @@ public class Game {
         }
     }
 
-    // MDOFIES: this
+    // MODIFIES: this
     // EFFECTS: adds wordValue to score
     public void updateScore(int wordValue) {
         score = score + wordValue;
