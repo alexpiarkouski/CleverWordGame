@@ -1,6 +1,7 @@
 package ui;
 
 import model.Game;
+import model.WordEntry;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
@@ -245,26 +246,15 @@ public class WordGame extends JPanel implements ActionListener {
         getWordEntries();
     }
 
-    // modified from TellerApp
-    // EFFECTS: displays menu of options to user
-    private void displayMenu() {
-        System.out.println("\nSelect from:");
-        System.out.println("\tplay -> play game");
-        System.out.println("\tscore -> view last score");
-        System.out.println("\tlast_game -> see last game");
-        System.out.println("\tsave -> save last game to file");
-        System.out.println("\tload -> load last game from file");
-        System.out.println("\tquit_game -> quit game");
-    }
-
     // EFFECTS: displays recorded word entries
     private void getWordEntries() {
         if (game.getWordEntryList().size() == 0) {
+            resultsTitleLabel.setText("Your valid game set is: empty game");
             System.out.println("Empty game");
         } else {
-            for (int i = 0; i < game.getWordEntryList().size(); i++) {
-                System.out.println(game.getWordEntryList().get(i).getWord() + ", "
-                        + game.getWordEntryList().get(i).getWordValue() + "; ");
+            for (WordEntry wordEntry : game.getWordEntryList()) {
+                resultsListModel.addElement(wordEntry.getWord() + ", "
+                        + wordEntry.getWordValue() + "; ");
             }
         }
     }
