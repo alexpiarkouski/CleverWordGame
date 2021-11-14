@@ -34,6 +34,7 @@ public class WordGame extends JPanel implements ActionListener {
     private DefaultListModel listModel;
     private DefaultListModel resultsListModel;
     private JTextField textField;
+    private JButton enterButton;
 
     private JLabel scoreLabel;
     private JLabel statusLabel;
@@ -74,6 +75,7 @@ public class WordGame extends JPanel implements ActionListener {
         //frame.pack();
         frame.setSize(WIDTH, HEIGHT);
         frame.setVisible(true);
+        game = new Game();
     }
 
 //    private JComponent initMenu() {
@@ -85,7 +87,7 @@ public class WordGame extends JPanel implements ActionListener {
         menuButtonPanel = new JPanel();
         menuButtonPanel.setLayout(new BoxLayout(menuButtonPanel, BoxLayout.PAGE_AXIS));
 
-        menuButtonPanel.add(makePlayButton());
+        menuButtonPanel.add(makeResetButton());
         menuButtonPanel.add(Box.createRigidArea(new Dimension(10, 10)));
         menuButtonPanel.add(makeScoreButton());
         menuButtonPanel.add(Box.createRigidArea(new Dimension(10, 10)));
@@ -110,6 +112,7 @@ public class WordGame extends JPanel implements ActionListener {
     // EFFECTS: initializes Game Panel
     private void initGamePanel() {
         gamePanel = new JPanel();
+        makeEnterButton();
 
         listModel = new DefaultListModel();
         listModel.addElement("<no words>");
@@ -127,7 +130,7 @@ public class WordGame extends JPanel implements ActionListener {
         gamePanel.add(Box.createHorizontalGlue());
         gamePanel.add(textField);
         gamePanel.add(Box.createRigidArea(new Dimension(10, 0)));
-        gamePanel.add(makeEnterButton());
+        gamePanel.add(enterButton);
         gamePanel.add(scoreLabel);
     }
 
@@ -232,8 +235,9 @@ public class WordGame extends JPanel implements ActionListener {
             refreshScore();
             System.out.println("Valid Word. Your score is " + game.getScore());
         }
-        if (game.getAttempts() > 0) {
-            playGame();
+        if (game.getAttempts() == 0) {
+            endGameMessage();
+            enterButton.setEnabled(false);
         }
     }
 
@@ -248,6 +252,7 @@ public class WordGame extends JPanel implements ActionListener {
 
     // EFFECTS: displays recorded word entries
     private void getWordEntries() {
+        resultsListModel.removeAllElements();
         if (game.getWordEntryList().size() == 0) {
             resultsTitleLabel.setText("Your valid game set is: empty game");
             System.out.println("Empty game");
@@ -259,19 +264,25 @@ public class WordGame extends JPanel implements ActionListener {
         }
     }
 
-    private JButton makePlayButton() {
-        JButton playButton = new JButton("Play");
-        playButton.setActionCommand("play");
-        playButton.addActionListener(new ActionListener() {
+    private JButton makeResetButton() {
+        JButton resetButton = new JButton("Reset");
+        resetButton.setActionCommand("reset");
+        resetButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 game = new Game();
-                String name = textField.getText();
-                playGame();
-                endGameMessage();
+                enterButton.setEnabled(true);
+                listModel.removeAllElements();
+                listModel.addElement("<no words>");
+                resultsListModel.removeAllElements();
+                resultsListModel.addElement("<no data>");
+                statusLabel.setText("No status");
+                resultsTitleLabel.setText("Results?");
+                refreshScore();
+
             }
         });
 
-        return playButton;
+        return resetButton;
     }
 
     private JButton makeScoreButton() {
@@ -322,19 +333,17 @@ public class WordGame extends JPanel implements ActionListener {
         return loadButton;
     }
 
-    private JButton makeEnterButton() {
-        JButton enterButton = new JButton("Enter Word");
+    private void makeEnterButton() {
+        enterButton = new JButton("Enter Word");
+        enterButton.setEnabled(true);
         enterButton.setActionCommand("advance");
         enterButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String name = textField.getText();
-                game = new Game();
                 playGame();
-                endGameMessage();
             }
         });
 
-        return enterButton;
     }
 
     private void refreshScore() {
