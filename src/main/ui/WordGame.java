@@ -119,6 +119,7 @@ public class WordGame extends JPanel implements ActionListener {
         list = new JList(listModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setVisibleRowCount(5);
+        JScrollPane listScrollPane = new JScrollPane(list);
 
         textField = new JTextField(10);
         textField.addActionListener(this);
@@ -126,7 +127,7 @@ public class WordGame extends JPanel implements ActionListener {
         scoreLabel = new JLabel("Current Score: " + "0");
 
         gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.LINE_AXIS));
-        gamePanel.add(list);
+        gamePanel.add(listScrollPane);
         gamePanel.add(Box.createHorizontalGlue());
         gamePanel.add(textField);
         gamePanel.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -145,10 +146,12 @@ public class WordGame extends JPanel implements ActionListener {
         resultsList = new JList(resultsListModel);
         resultsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         resultsList.setVisibleRowCount(5);
+        JScrollPane listScrollPane = new JScrollPane(resultsList);
+
 
         resultsPanel.setLayout(new BoxLayout(resultsPanel, BoxLayout.PAGE_AXIS));
         resultsPanel.add(resultsTitleLabel);
-        resultsPanel.add(resultsList);
+        resultsPanel.add(listScrollPane);
         resultsPanel.add(statusLabel);
     }
 
@@ -226,6 +229,7 @@ public class WordGame extends JPanel implements ActionListener {
         if (!(game.checkIfWordValid(word))) {
             game.enterInvalidWord();
             System.out.println("Invalid Word. Your score is " + game.getScore());
+            statusLabel.setText("Status: " + "Invalid Word");
             Toolkit.getDefaultToolkit().beep();
             textField.requestFocusInWindow();
             textField.selectAll();
@@ -233,6 +237,9 @@ public class WordGame extends JPanel implements ActionListener {
             game.enterValidWord(word);
             listModel.addElement(word);
             refreshScore();
+            textField.setText("");
+            textField.requestFocusInWindow();
+            statusLabel.setText("Status: " + "Valid Word");
             System.out.println("Valid Word. Your score is " + game.getScore());
         }
         if (game.getAttempts() == 0) {
@@ -255,6 +262,7 @@ public class WordGame extends JPanel implements ActionListener {
         resultsListModel.removeAllElements();
         if (game.getWordEntryList().size() == 0) {
             resultsTitleLabel.setText("Your valid game set is: empty game");
+            resultsListModel.addElement("<no data>");
             System.out.println("Empty game");
         } else {
             for (WordEntry wordEntry : game.getWordEntryList()) {
