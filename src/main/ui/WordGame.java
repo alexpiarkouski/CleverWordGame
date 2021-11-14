@@ -22,8 +22,8 @@ public class WordGame extends JPanel implements ActionListener {
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
 
-    private static final int WIDTH = 500;
-    private static final int HEIGHT = 500;
+    private static final int WIDTH = 1000;
+    private static final int HEIGHT = 250;
 
     private JFrame frame;
     private JPanel menuButtonPanel;
@@ -70,8 +70,8 @@ public class WordGame extends JPanel implements ActionListener {
         frame.add(resultsPanel);
 
         //Display the window.
-        frame.pack();
-        //frame.setSize(WIDTH, HEIGHT);
+        //frame.pack();
+        frame.setSize(WIDTH, HEIGHT);
         frame.setVisible(true);
     }
 
@@ -127,6 +127,7 @@ public class WordGame extends JPanel implements ActionListener {
         gamePanel.add(textField);
         gamePanel.add(Box.createRigidArea(new Dimension(10, 0)));
         gamePanel.add(makeEnterButton());
+        gamePanel.add(scoreLabel);
     }
 
     private void initResultsPanel() {
@@ -176,8 +177,10 @@ public class WordGame extends JPanel implements ActionListener {
             jsonWriter.open();
             jsonWriter.write(game);
             jsonWriter.close();
+            statusLabel.setText("Status: " + "Saved game with score " + game.getScore() + " to " + JSON_STORE);
             System.out.println("Saved game with score " + game.getScore() + " to " + JSON_STORE);
         } catch (FileNotFoundException e) {
+            statusLabel.setText("Status: " + "Saved game with score " + game.getScore() + " to " + JSON_STORE);
             System.out.println("Unable to write to file: " + JSON_STORE);
         }
     }
@@ -188,20 +191,24 @@ public class WordGame extends JPanel implements ActionListener {
     private void loadGame() {
         try {
             game = jsonReader.read();
+            statusLabel.setText("Status: " + "Loaded game with score " + game.getScore() + " from " + JSON_STORE);
             System.out.println("Loaded game with score " + game.getScore() + " from " + JSON_STORE);
         } catch (IOException e) {
+            statusLabel.setText("Status: " + "Unable to read from file: " + JSON_STORE);
             System.out.println("Unable to read from file: " + JSON_STORE);
         }
     }
 
     // EFFECTS: displays word entries from the previous game
     private void lastSet() {
+        resultsTitleLabel.setText("Last valid game set ");
         System.out.println("Last valid game set is: ");
         getWordEntries();
     }
 
     // EFFECTS: displays point score from the previous game
     private void lastScore() {
+        statusLabel.setText("Status: " + "Last final score is: " + game.getScore());
         System.out.println("Last final score is: " + game.getScore());
     }
 
@@ -231,7 +238,9 @@ public class WordGame extends JPanel implements ActionListener {
 
     // EFFECTS: displays end game message with final score and word entries (game set)
     private void endGameMessage() {
+        statusLabel.setText("Status: " + "Game Over. Your final score is " + game.getScore());
         System.out.println("Game Over. Your final score is " + game.getScore());
+        resultsTitleLabel.setText("Your valid game set is ");
         System.out.println("Your valid game set is ");
         getWordEntries();
     }
