@@ -86,10 +86,11 @@ class GameTest {
                 game.checkIfWordValid("cats"));
         assertEquals(game.checkIfWordInList("cat") && game.checkLetterNum("cat"),
                 game.checkIfWordValid("cat"));
-        assertEquals(false, game.checkIfWordValid("monkey"));
-        assertEquals(false, game.checkIfWordValid("abcdefghijklmnopqrstuvwxyz"));
+        assertFalse(game.checkIfWordValid("monkey"));
+        assertFalse(game.checkIfWordValid("abcdefghijklmnopqrstuvwxyz"));
         assertEquals(game.checkIfWordInList("9999") && game.checkLetterNum("9999"),
                 game.checkIfWordValid("9999"));
+        assertFalse(game.checkIfWordValid(""));
     }
 
     @Test
