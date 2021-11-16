@@ -150,10 +150,9 @@ public class WordGame extends JPanel implements ActionListener {
         resultsPanel = new JPanel();
 
         resultsTitleLabel = new JLabel("Results Panel");
-        statusLabel = new JLabel("New game started. " + game.getAttempts() + " attempts left. "
+        statusLabel = new JLabel("<html>" + "New game started. " + "<br/>"
+                + game.getAttempts() + " attempts left. " + "<br/>"
                 + "Enter a " + game.getLetterNum() + "-letter word");
-        //statusLabel.setText("<html>" + statusLabel.getText() + "<br/>" + game.getAttempts() + " attempts left. "
-        //                + "<br/>" + "Enter a " + game.getLetterNum() + "-letter word" + "<html>");
 
         resultsListModel = new DefaultListModel<>();
         resultsListModel.addElement("<no data>");
@@ -232,10 +231,10 @@ public class WordGame extends JPanel implements ActionListener {
             textField.requestFocusInWindow();
             statusLabel.setText("Status: " + "Valid Word");
         }
-        //statusLabel.setText("<html>" + statusLabel.getText() + "<br/>" + game.getAttempts() + " attempts left. "
-        //                + "<br/>" + "Enter a " + game.getLetterNum() + "-letter word" + "<html>");
-        statusLabel.setText(statusLabel.getText() + ". " + game.getAttempts() + " attempts left. "
-                + "Enter a " + game.getLetterNum() + "-letter word");
+        statusLabel.setText("<html>" + statusLabel.getText() + "<br/>" + game.getAttempts() + " attempts left. "
+                        + "<br/>" + "Enter a " + game.getLetterNum() + "-letter word" + "<html>");
+        //statusLabel.setText(statusLabel.getText() + ". " + game.getAttempts() + " attempts left. "
+        //        + "Enter a " + game.getLetterNum() + "-letter word");
         if (game.getAttempts() == 0) {
             endGameMessage();
             enterButton.setEnabled(false);
