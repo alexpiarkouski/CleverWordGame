@@ -84,25 +84,25 @@ class GameTest {
     void testCheckIfWordValid() {
         assertEquals(game.checkIfWordInList("cats")
                         && game.checkLetterNum("cats")
-                        && !"cats".equals(""),
+                        && game.checkIfStringNotEmpty("cat"),
                 game.checkIfWordValid("cats"));
         assertEquals(game.checkIfWordInList("cat")
                         && game.checkLetterNum("cat")
-                        && !"cat".equals(""),
+                        && game.checkIfStringNotEmpty("cat"),
                 game.checkIfWordValid("cat"));
         assertFalse(game.checkIfWordValid("monkey"));
         assertFalse(game.checkIfWordValid("abcdefghijklmnopqrstuvwxyz"));
         assertEquals(game.checkIfWordInList("9999")
                         && game.checkLetterNum("9999")
-                        && !"9999".equals(""),
+                        && game.checkIfStringNotEmpty("9999"),
                 game.checkIfWordValid("9999"));
         assertEquals(game.checkIfWordInList("999")
                         && game.checkLetterNum("999")
-                        && !"999".equals(""),
+                        && game.checkIfStringNotEmpty("999"),
                 game.checkIfWordValid("999"));
         assertEquals(game.checkIfWordInList("")
                 && game.checkLetterNum("")
-                && !"".equals(""), game.checkIfWordValid(""));
+                && game.checkIfStringNotEmpty(""), game.checkIfWordValid(""));
     }
 
     @Test

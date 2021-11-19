@@ -84,7 +84,7 @@ public class Game implements Writable {
     // EFFECTS: returns true if both the valid english word and letter number conditions of the word are satisfied,
     // else false
     public boolean checkIfWordValid(String thisWord) {
-        return (checkIfWordInList(thisWord) && checkLetterNum(thisWord) && !thisWord.equals(""));
+        return (checkIfWordInList(thisWord) && checkLetterNum(thisWord) && checkIfStringNotEmpty(thisWord));
     }
 
     // EFFECTS: returns true if given word is found in the eligible word list
@@ -95,6 +95,11 @@ public class Game implements Writable {
         } else {
             return true;
         }
+    }
+
+    // EFFECTS: returns true if string passed through is not empty (!equals to ""). Else false
+    public boolean checkIfStringNotEmpty(String thisWord) {
+        return !thisWord.equals("");
     }
 
     // Modified from WorkRoomApp
