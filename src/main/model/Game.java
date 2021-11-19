@@ -90,7 +90,7 @@ public class Game implements Writable {
     // EFFECTS: returns true if given word is found in the eligible word list
     // Note: stub, work in progress
     public boolean checkIfWordInList(String thisWord) {
-        if (thisWord.equals("9999")) { //testing stub
+        if (thisWord.equals("9999") || thisWord.equals("999")) { //testing stub
             return false;
         } else {
             return true;

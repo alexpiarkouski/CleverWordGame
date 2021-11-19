@@ -82,19 +82,31 @@ class GameTest {
 
     @Test
     void testCheckIfWordValid() {
-        assertEquals(game.checkIfWordInList("cats") && game.checkLetterNum("cats"),
+        assertEquals(game.checkIfWordInList("cats")
+                        && game.checkLetterNum("cats")
+                        && !"cats".equals(""),
                 game.checkIfWordValid("cats"));
-        assertEquals(game.checkIfWordInList("cat") && game.checkLetterNum("cat"),
+        assertEquals(game.checkIfWordInList("cat")
+                        && game.checkLetterNum("cat")
+                        && !"cat".equals(""),
                 game.checkIfWordValid("cat"));
         assertFalse(game.checkIfWordValid("monkey"));
         assertFalse(game.checkIfWordValid("abcdefghijklmnopqrstuvwxyz"));
-        assertEquals(game.checkIfWordInList("9999") && game.checkLetterNum("9999"),
+        assertEquals(game.checkIfWordInList("9999")
+                        && game.checkLetterNum("9999")
+                        && !"9999".equals(""),
                 game.checkIfWordValid("9999"));
-        assertFalse(game.checkIfWordValid(""));
+        assertEquals(game.checkIfWordInList("999")
+                        && game.checkLetterNum("999")
+                        && !"999".equals(""),
+                game.checkIfWordValid("999"));
+        assertEquals(game.checkIfWordInList("")
+                && game.checkLetterNum("")
+                && !"".equals(""), game.checkIfWordValid(""));
     }
 
     @Test
-    // Work in progress - method returns true by default for now except false for "9999" - testing purposes
+        // Work in progress - method returns true by default for now except false for "9999" - testing purposes
     void testCheckIfWordInList() {
         assertTrue(game.checkIfWordInList(""));
         assertTrue(game.checkIfWordInList("abc"));
