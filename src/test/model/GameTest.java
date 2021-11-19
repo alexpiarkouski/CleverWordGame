@@ -124,6 +124,13 @@ class GameTest {
     }
 
     @Test
+    void testCheckIfStringNotEmpty() {
+        assertFalse(game.checkIfStringNotEmpty(""));
+        assertTrue(game.checkIfStringNotEmpty("999"));
+        assertTrue(game.checkIfStringNotEmpty("cats"));
+    }
+
+    @Test
     void testGetLetterNum() {
         assertEquals(4, game.getLetterNum());
         Game newGame = new Game();
