@@ -16,30 +16,31 @@ import java.io.IOException;
 // Clever Word Game app
 public class WordGame extends JPanel implements ActionListener {
 
-    // Some fields modified from WorkRoomApp
+    // Some fields modified from WorkRoomApp and Traffic Light problem
     private static final String JSON_STORE = "./data/game.json";
-    //private static final ImageIcon icon = new ImageIcon("./data/icon.gif");
     private static final ImageIcon iconBad = new ImageIcon("./data/icon-bad.gif");
     private static final ImageIcon iconGood = new ImageIcon("./data/icon-good.gif");
     private static final ImageIcon iconGreat = new ImageIcon("./data/icon-great.gif");
     private static final int GOOD_SCORE_CUTOFF = 1;
     private static final int GREAT_SCORE_CUTOFF = 30;
-    // private Scanner input;
+    private static final int WIDTH = 1000;
+    private static final int HEIGHT = 250;
+
     private Game game;
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
-
-    private static final int WIDTH = 1000;
-    private static final int HEIGHT = 250;
 
     private JFrame frame;
     private JPanel menuButtonPanel;
     private JPanel gamePanel;
     private JPanel resultsPanel;
-    private JList<String> list;
-    private DefaultListModel<String> listModel;
+    private JPanel entryListPanel;
+    private JPanel textFieldPanel;
+
+    private DefaultListModel<String> entryListModel;
     private DefaultListModel<String> resultsListModel;
     private JTextField textField;
+
     private JButton enterButton;
     private JButton resetButton;
     private JButton scoreButton;
@@ -50,7 +51,6 @@ public class WordGame extends JPanel implements ActionListener {
     private JLabel scoreLabel;
     private JLabel statusLabel;
     private JLabel resultsTitleLabel;
-    private JList<String> resultsList;
 
     // Modified from WorkRoomApp
     // EFFECTS: runs the Word Game app
@@ -59,9 +59,9 @@ public class WordGame extends JPanel implements ActionListener {
         runWordGame();
     }
 
-    // modified from TellerApp
+    // Partially modified from DrawingEditor
     // MODIFIES: this
-    // EFFECTS: processes user input
+    // EFFECTS: Creates game window frame, calls methods to initialize app panels, adds panels to frame
     public void runWordGame() {
         game = new Game();
 
@@ -70,11 +70,15 @@ public class WordGame extends JPanel implements ActionListener {
 
         initJson();
         initMenuButtonPanel();
+        initEntryListPanel();
+        initTextFieldPanel();
         initGamePanel();
         initResultsPanel();
 
         frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.LINE_AXIS));
         frame.add(menuButtonPanel);
+        frame.add(entryListPanel);
+        frame.add(textFieldPanel);
         frame.add(gamePanel);
         frame.add(resultsPanel);
 
@@ -84,6 +88,8 @@ public class WordGame extends JPanel implements ActionListener {
         frame.setVisible(true);
     }
 
+    // MODIFIES: this
+    // EFFECTS: Initializes Menu Button Panel
     private void initMenuButtonPanel() {
         menuButtonPanel = new JPanel();
         menuButtonPanel.setLayout(new BoxLayout(menuButtonPanel, BoxLayout.PAGE_AXIS));
@@ -115,37 +121,56 @@ public class WordGame extends JPanel implements ActionListener {
     }
 
     // MODIFIES: this
-    // EFFECTS: initializes Game Panel
-    private void initGamePanel() {
-        gamePanel = new JPanel();
-        makeEnterButton();
+    // EFFECTS: Initializes List of Entries Panel
+    private void initEntryListPanel() {
+        entryListPanel = new JPanel();
 
-        listModel = new DefaultListModel<>();
-        listModel.addElement("<no words>");
-        list = new JList<>(listModel);
+        entryListModel = new DefaultListModel<>();
+        //listModel.addElement("<no words>");
+        JList<String> list = new JList<>(entryListModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setVisibleRowCount(5);
-        JScrollPane listScrollPane = new JScrollPane(list);
+        JScrollPane listScrollPane = new JScrollPane(list); // to make list visible at all times event when empty
+
+        JLabel entryListLabel = new JLabel("Current Entries");
+
+        entryListPanel.setLayout(new BoxLayout(entryListPanel, BoxLayout.PAGE_AXIS));
+        entryListPanel.add(entryListLabel);
+        entryListPanel.add(listScrollPane);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: Initializes Text Field Panel
+    private void initTextFieldPanel() {
+        textFieldPanel = new JPanel();
 
         textField = new JTextField(10);
         textField.addActionListener(this);
 
-        scoreLabel = new JLabel("Current Score: " + game.getScore());
+        JLabel textFieldLabel = new JLabel("Text Entry Area");
 
-
-        gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.LINE_AXIS));
-        gamePanel.add(listScrollPane);
-        gamePanel.add(Box.createHorizontalGlue());
-        gamePanel.add(textField);
-        gamePanel.add(Box.createRigidArea(new Dimension(10, 0)));
-        gamePanel.add(enterButton);
-        gamePanel.add(scoreLabel);
-        System.out.println("You have " + game.getAttempts() + " attempts left");
-        System.out.println("Enter a " + game.getLetterNum() + "-letter word");
+        textFieldPanel.setLayout(new BoxLayout(textFieldPanel, BoxLayout.PAGE_AXIS));
+        textFieldPanel.add(textFieldLabel);
+        textFieldPanel.add(textField);
     }
 
     // MODIFIES: this
-    // EFFECTS: initializes Results Panel
+    // EFFECTS: initializes Game Panel - Score and Enter Buttons
+    private void initGamePanel() {
+        gamePanel = new JPanel();
+        makeEnterButton();
+
+        scoreLabel = new JLabel("Current Score: " + game.getScore());
+
+        gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.LINE_AXIS));
+        gamePanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        gamePanel.add(enterButton);
+        gamePanel.add(scoreLabel);
+    }
+
+
+    // MODIFIES: this
+    // EFFECTS: initializes Results Panel and the status bar it contains
     private void initResultsPanel() {
         resultsPanel = new JPanel();
 
@@ -156,7 +181,7 @@ public class WordGame extends JPanel implements ActionListener {
 
         resultsListModel = new DefaultListModel<>();
         resultsListModel.addElement("<no data>");
-        resultsList = new JList<>(resultsListModel);
+        JList<String> resultsList = new JList<>(resultsListModel);
         resultsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         resultsList.setVisibleRowCount(5);
         JScrollPane listScrollPane = new JScrollPane(resultsList);
@@ -168,6 +193,7 @@ public class WordGame extends JPanel implements ActionListener {
     }
 
     // Modified from WorkRoomApp
+    // MODIFIES: JSON_SCORE
     // EFFECTS: saves game to file
     private void saveGame() {
         try {
@@ -175,10 +201,8 @@ public class WordGame extends JPanel implements ActionListener {
             jsonWriter.write(game);
             jsonWriter.close();
             statusLabel.setText("Status: " + "Saved game with score " + game.getScore() + " to " + JSON_STORE);
-            System.out.println("Saved game with score " + game.getScore() + " to " + JSON_STORE);
         } catch (FileNotFoundException e) {
-            statusLabel.setText("Status: " + "Saved game with score " + game.getScore() + " to " + JSON_STORE);
-            System.out.println("Unable to write to file: " + JSON_STORE);
+            statusLabel.setText("Status: " + "Unable to save to file: " + JSON_STORE);
         }
     }
 
@@ -189,26 +213,22 @@ public class WordGame extends JPanel implements ActionListener {
         try {
             game = jsonReader.read();
             statusLabel.setText("Status: " + "Loaded game with score " + game.getScore() + " from " + JSON_STORE);
-            System.out.println("Loaded game with score " + game.getScore() + " from " + JSON_STORE);
             refreshScore();
             enterButton.setEnabled(false);
         } catch (IOException e) {
             statusLabel.setText("Status: " + "Unable to read from file: " + JSON_STORE);
-            System.out.println("Unable to read from file: " + JSON_STORE);
         }
     }
 
     // EFFECTS: displays word entries from the previous game
     private void lastSet() {
         resultsTitleLabel.setText("Last valid game set ");
-        System.out.println("Last valid game set is: ");
         getWordEntries();
     }
 
     // EFFECTS: displays point score from the previous game
     private void lastScore() {
         statusLabel.setText("Status: " + "Last final score is: " + game.getScore());
-        System.out.println("Last final score is: " + game.getScore());
     }
 
     // REQUIRES: attempts >=0
@@ -225,7 +245,7 @@ public class WordGame extends JPanel implements ActionListener {
             textField.selectAll();
         } else {
             game.enterValidWord(word);
-            listModel.addElement(word);
+            entryListModel.addElement(word);
             refreshScore();
             textField.setText("");
             textField.requestFocusInWindow();
@@ -233,8 +253,6 @@ public class WordGame extends JPanel implements ActionListener {
         }
         statusLabel.setText("<html>" + statusLabel.getText() + "<br/>" + game.getAttempts() + " attempts left. "
                         + "<br/>" + "Enter a " + game.getLetterNum() + "-letter word" + "<html>");
-        //statusLabel.setText(statusLabel.getText() + ". " + game.getAttempts() + " attempts left. "
-        //        + "Enter a " + game.getLetterNum() + "-letter word");
         if (game.getAttempts() == 0) {
             endGameMessage();
             enterButton.setEnabled(false);
@@ -242,12 +260,9 @@ public class WordGame extends JPanel implements ActionListener {
         }
     }
 
-    // EFFECTS: displays end game message with final score and word entries (game set)
+    // EFFECTS: calls game dialogue with varying images depending on score value and shows final game set
     private void endGameMessage() {
-        //statusLabel.setText("Status: " + "Game Over. Your final score is " + game.getScore());
-        System.out.println("Game Over. Your final score is " + game.getScore());
         resultsTitleLabel.setText("Your valid game set is ");
-        System.out.println("Your valid game set is ");
         getWordEntries();
         if (game.getScore() < GOOD_SCORE_CUTOFF) {
             endGameDialogue(iconBad);
@@ -258,6 +273,8 @@ public class WordGame extends JPanel implements ActionListener {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates end game dialogue window with score, text and image
     private void endGameDialogue(ImageIcon icon) {
         JOptionPane.showMessageDialog(frame,
                 "Game over. Your final score is " + game.getScore(),
@@ -272,7 +289,6 @@ public class WordGame extends JPanel implements ActionListener {
         if (game.getWordEntryList().size() == 0) {
             resultsTitleLabel.setText("Your valid game set is: empty game");
             resultsListModel.addElement("<no data>");
-            System.out.println("Empty game");
         } else {
             for (WordEntry wordEntry : game.getWordEntryList()) {
                 resultsListModel.addElement(wordEntry.getWord() + ", "
@@ -281,6 +297,7 @@ public class WordGame extends JPanel implements ActionListener {
         }
     }
 
+    // EFFECTS: Sets whether menu buttons are enabled equal to onOffStatus (excluding reset button)
     private void accessMenuButtonsInGame(boolean onOffStatus) {
         scoreButton.setEnabled(onOffStatus);
         lastSetButton.setEnabled(onOffStatus);
@@ -288,48 +305,60 @@ public class WordGame extends JPanel implements ActionListener {
         loadButton.setEnabled(onOffStatus);
     }
 
+    // Modified from Traffic Light Project
+    // EFFECTS: Creates a reset button and defines associated action - reset game, score, last game set
     private void makeResetButton() {
         resetButton = new JButton("Reset");
         resetButton.setActionCommand("reset");
         resetButton.addActionListener(e -> {
             game = new Game();
             enterButton.setEnabled(true);
-            listModel.removeAllElements();
-            listModel.addElement("<no words>");
+            entryListModel.removeAllElements();
+            entryListModel.addElement("<no words>");
             resultsListModel.removeAllElements();
             resultsListModel.addElement("<no data>");
-            statusLabel.setText("No status");
+            statusLabel.setText("<html>" + "New game started. " + "<br/>"
+                    + game.getAttempts() + " attempts left. " + "<br/>"
+                    + "Enter a " + game.getLetterNum() + "-letter word");
             resultsTitleLabel.setText("Results");
             refreshScore();
-            System.out.println("You have " + game.getAttempts() + " attempts left");
-            System.out.println("Enter a " + game.getLetterNum() + "-letter word");
         });
     }
 
+    // Modified from Traffic Light Project
+    // EFFECTS: Creates a last score button and defines associated action - display last score
     private void makeScoreButton() {
-        scoreButton = new JButton("Score");
+        scoreButton = new JButton("Last Score");
         scoreButton.setActionCommand("score");
         scoreButton.addActionListener(e -> lastScore());
     }
 
+    // Modified from Traffic Light Project
+    // EFFECTS: Creates a last game set button and defines associated action - display last game set
     private void makeLastSetButton() {
         lastSetButton = new JButton("Last Game Set");
         lastSetButton.setActionCommand("last_set");
         lastSetButton.addActionListener(e -> lastSet());
     }
 
+    // Modified from Traffic Light Project
+    // EFFECTS: Creates a save button and defines associated action - save game
     private void makeSaveButton() {
         saveButton = new JButton("Save");
         saveButton.setActionCommand("save");
         saveButton.addActionListener(e -> saveGame());
     }
 
+    // Modified from Traffic Light Project
+    // EFFECTS: Creates a load button and defines associated action - load game
     private void makeLoadButton() {
         loadButton = new JButton("Load");
         loadButton.setActionCommand("load");
         loadButton.addActionListener(e -> loadGame());
     }
 
+    // Modified from Traffic Light Project
+    // EFFECTS: Creates an enter button and defines associated action - play game by entering a word
     private void makeEnterButton() {
         enterButton = new JButton("Enter Word");
         enterButton.setEnabled(true);
@@ -338,10 +367,12 @@ public class WordGame extends JPanel implements ActionListener {
 
     }
 
+    // EFFECTS: updates scoreLabel with latest score
     private void refreshScore() {
         scoreLabel.setText("Current Score: " + game.getScore());
     }
 
+    // Required by ActionListener associated with JButton Class
     @Override
     public void actionPerformed(ActionEvent e) {
 

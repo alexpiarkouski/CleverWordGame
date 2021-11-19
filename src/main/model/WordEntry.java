@@ -35,7 +35,4 @@ public class WordEntry implements Writable {
         return json;
     }
 
-
-
-
 }
