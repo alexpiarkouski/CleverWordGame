@@ -3,6 +3,8 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileNotFoundException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 // Test class for Game
@@ -81,37 +83,36 @@ class GameTest {
     }
 
     @Test
-    void testCheckIfWordValid() {
+    void testCheckIfWordValid() throws FileNotFoundException {
         assertEquals(game.checkIfWordInList("cats")
-                        && game.checkLetterNum("cats")
-                        && game.checkIfStringNotEmpty("cat"),
+                        && game.checkLetterNum("cats"),
                 game.checkIfWordValid("cats"));
         assertEquals(game.checkIfWordInList("cat")
-                        && game.checkLetterNum("cat")
-                        && game.checkIfStringNotEmpty("cat"),
+                        && game.checkLetterNum("cat"),
                 game.checkIfWordValid("cat"));
         assertFalse(game.checkIfWordValid("monkey"));
         assertFalse(game.checkIfWordValid("abcdefghijklmnopqrstuvwxyz"));
         assertEquals(game.checkIfWordInList("9999")
-                        && game.checkLetterNum("9999")
-                        && game.checkIfStringNotEmpty("9999"),
+                        && game.checkLetterNum("9999"),
                 game.checkIfWordValid("9999"));
         assertEquals(game.checkIfWordInList("999")
-                        && game.checkLetterNum("999")
-                        && game.checkIfStringNotEmpty("999"),
+                        && game.checkLetterNum("999"),
                 game.checkIfWordValid("999"));
         assertEquals(game.checkIfWordInList("")
-                && game.checkLetterNum("")
-                && game.checkIfStringNotEmpty(""), game.checkIfWordValid(""));
+                && game.checkLetterNum(""),
+                game.checkIfWordValid(""));
     }
 
     @Test
-        // Work in progress - method returns true by default for now except false for "9999" - testing purposes
-    void testCheckIfWordInList() {
-        assertTrue(game.checkIfWordInList(""));
-        assertTrue(game.checkIfWordInList("abc"));
-        assertTrue(game.checkIfWordInList("123"));
+
+    void testCheckIfWordInList() throws FileNotFoundException {
+        assertFalse(game.checkIfWordInList(""));
+        assertTrue(game.checkIfWordInList("cat"));
+        assertTrue(game.checkIfWordInList("cats"));
+        assertTrue(game.checkIfWordInList("zzz"));
+        assertTrue(game.checkIfWordInList("2"));
         assertFalse(game.checkIfWordInList("9999"));
+        assertFalse(game.checkIfWordInList("catz"));
     }
 
     @Test
@@ -121,13 +122,6 @@ class GameTest {
         assertFalse(game.checkLetterNum(""));
         assertFalse(game.checkLetterNum("monkey"));
         assertTrue(game.checkLetterNum("    "));
-    }
-
-    @Test
-    void testCheckIfStringNotEmpty() {
-        assertFalse(game.checkIfStringNotEmpty(""));
-        assertTrue(game.checkIfStringNotEmpty("999"));
-        assertTrue(game.checkIfStringNotEmpty("cats"));
     }
 
     @Test

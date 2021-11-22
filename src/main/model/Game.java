@@ -4,11 +4,16 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 // Represents a Clever Word Game round
 public class Game implements Writable {
+
+    private static final File VALID_WORDS_LIST_STORE = new File("./data/words-2.txt");
     private int score;
     private int attempts;
     private int letterNum;
@@ -84,22 +89,27 @@ public class Game implements Writable {
     // EFFECTS: returns true if both the valid english word and letter number conditions of the word are satisfied,
     // else false
     public boolean checkIfWordValid(String thisWord) {
-        return (checkIfWordInList(thisWord) && checkLetterNum(thisWord) && checkIfStringNotEmpty(thisWord));
-    }
-
-    // EFFECTS: returns true if given word is found in the eligible word list
-    // Note: stub, work in progress
-    public boolean checkIfWordInList(String thisWord) {
-        if (thisWord.equals("9999") || thisWord.equals("999")) { //testing stub
-            return false;
-        } else {
-            return true;
+        boolean isWordValid = false;
+        try {
+            isWordValid = (checkIfWordInList(thisWord) && checkLetterNum(thisWord));
+        } catch (FileNotFoundException e) {
+            System.out.println("Status: " + "Unable to find file: " + VALID_WORDS_LIST_STORE);
         }
+        return isWordValid;
     }
 
-    // EFFECTS: returns true if string passed through is not empty (!equals to ""). Else false
-    public boolean checkIfStringNotEmpty(String thisWord) {
-        return !thisWord.equals("");
+
+    // EFFECTS: returns true if given word is found in the eligible word list. Else false
+    public boolean checkIfWordInList(String thisWord) throws FileNotFoundException {
+        boolean isWordInList = false;
+        Scanner scan = new Scanner(VALID_WORDS_LIST_STORE);
+        while (scan.hasNext()) {
+            String validWord = scan.nextLine().toLowerCase();
+            if (validWord.equals(thisWord)) {
+                isWordInList = true;
+            }
+        }
+        return isWordInList;
     }
 
     // Modified from WorkRoomApp
@@ -124,9 +134,12 @@ public class Game implements Writable {
     }
 
 
-    // EFFECTS: returns true if given word is of correct character length
+    // EFFECTS: returns true if given word is a non-empty string of correct character length
     public boolean checkLetterNum(String thisWord) {
-        return thisWord.length() == letterNum;
+        if (!thisWord.equals("")) {
+            return thisWord.length() == letterNum;
+        }
+        return false;
     }
 
     // MODIFIES: this
