@@ -1,5 +1,7 @@
 package ui;
 
+import model.Event;
+import model.EventLog;
 import model.Game;
 import model.WordEntry;
 import persistence.JsonReader;
@@ -9,9 +11,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-//import java.util.Scanner;
 
 // Clever Word Game app
 public class WordGame extends JPanel implements ActionListener {
@@ -31,11 +34,6 @@ public class WordGame extends JPanel implements ActionListener {
     private JsonReader jsonReader;
 
     private JFrame frame;
-    private JPanel menuButtonPanel;
-    private JPanel gamePanel;
-    private JPanel resultsPanel;
-    private JPanel entryListPanel;
-    private JPanel textFieldPanel;
 
     private DefaultListModel<String> entryListModel;
     private DefaultListModel<String> resultsListModel;
@@ -52,6 +50,7 @@ public class WordGame extends JPanel implements ActionListener {
     private JLabel statusLabel;
     private JLabel resultsTitleLabel;
 
+
     // Modified from WorkRoomApp
     // EFFECTS: runs the Word Game app
     // throws FileNotFoundException
@@ -66,7 +65,16 @@ public class WordGame extends JPanel implements ActionListener {
         game = new Game();
 
         frame = new JFrame("Clever Word Game");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        WindowAdapter windowAdapter = new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                for (Event next : EventLog.getInstance()) {
+                    System.out.println(next.toString());
+                }
+                System.exit(0);
+            }
+        };
 
         initJson();
         initMenuButtonPanel();
@@ -76,14 +84,9 @@ public class WordGame extends JPanel implements ActionListener {
         initResultsPanel();
 
         frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.LINE_AXIS));
-        frame.add(menuButtonPanel);
-        frame.add(entryListPanel);
-        frame.add(textFieldPanel);
-        frame.add(gamePanel);
-        frame.add(resultsPanel);
+        frame.addWindowListener(windowAdapter);
 
         //Display the window.
-        //frame.pack();
         frame.setSize(WIDTH, HEIGHT);
         frame.setVisible(true);
     }
@@ -91,7 +94,7 @@ public class WordGame extends JPanel implements ActionListener {
     // MODIFIES: this
     // EFFECTS: Initializes Menu Button Panel
     private void initMenuButtonPanel() {
-        menuButtonPanel = new JPanel();
+        JPanel menuButtonPanel = new JPanel();
         menuButtonPanel.setLayout(new BoxLayout(menuButtonPanel, BoxLayout.PAGE_AXIS));
 
         makeResetButton();
@@ -110,6 +113,8 @@ public class WordGame extends JPanel implements ActionListener {
         menuButtonPanel.add(Box.createRigidArea(new Dimension(10, 10)));
         menuButtonPanel.add(loadButton);
 
+        frame.add(menuButtonPanel);
+
     }
 
     // modified from TellerApp and WorkRoomApp
@@ -123,7 +128,7 @@ public class WordGame extends JPanel implements ActionListener {
     // MODIFIES: this
     // EFFECTS: Initializes List of Entries Panel
     private void initEntryListPanel() {
-        entryListPanel = new JPanel();
+        JPanel entryListPanel = new JPanel();
 
         entryListModel = new DefaultListModel<>();
         //listModel.addElement("<no words>");
@@ -137,12 +142,14 @@ public class WordGame extends JPanel implements ActionListener {
         entryListPanel.setLayout(new BoxLayout(entryListPanel, BoxLayout.PAGE_AXIS));
         entryListPanel.add(entryListLabel);
         entryListPanel.add(listScrollPane);
+
+        frame.add(entryListPanel);
     }
 
     // MODIFIES: this
     // EFFECTS: Initializes Text Field Panel
     private void initTextFieldPanel() {
-        textFieldPanel = new JPanel();
+        JPanel textFieldPanel = new JPanel();
 
         textField = new JTextField(10);
         textField.addActionListener(this);
@@ -152,12 +159,14 @@ public class WordGame extends JPanel implements ActionListener {
         textFieldPanel.setLayout(new BoxLayout(textFieldPanel, BoxLayout.PAGE_AXIS));
         textFieldPanel.add(textFieldLabel);
         textFieldPanel.add(textField);
+
+        frame.add(textFieldPanel);
     }
 
     // MODIFIES: this
     // EFFECTS: initializes Game Panel - Score and Enter Buttons
     private void initGamePanel() {
-        gamePanel = new JPanel();
+        JPanel gamePanel = new JPanel();
         makeEnterButton();
 
         scoreLabel = new JLabel("Current Score: " + game.getScore());
@@ -166,13 +175,15 @@ public class WordGame extends JPanel implements ActionListener {
         gamePanel.add(Box.createRigidArea(new Dimension(10, 0)));
         gamePanel.add(enterButton);
         gamePanel.add(scoreLabel);
+
+        frame.add(gamePanel);
     }
 
 
     // MODIFIES: this
     // EFFECTS: initializes Results Panel and the status bar it contains
     private void initResultsPanel() {
-        resultsPanel = new JPanel();
+        JPanel resultsPanel = new JPanel();
 
         resultsTitleLabel = new JLabel("Results Panel");
         statusLabel = new JLabel("<html>" + "New game started. " + "<br/>"
@@ -190,6 +201,8 @@ public class WordGame extends JPanel implements ActionListener {
         resultsPanel.add(resultsTitleLabel);
         resultsPanel.add(listScrollPane);
         resultsPanel.add(statusLabel);
+
+        frame.add(resultsPanel);
     }
 
     // Modified from WorkRoomApp
@@ -312,6 +325,7 @@ public class WordGame extends JPanel implements ActionListener {
         resetButton.setActionCommand("reset");
         resetButton.addActionListener(e -> {
             game = new Game();
+            game.logGameReset();
             enterButton.setEnabled(true);
             entryListModel.removeAllElements();
             entryListModel.addElement("<no words>");

@@ -28,3 +28,43 @@ As for my interest in the project, I consider myself a member of all 3 groups me
 **Phase 2**
 - As a user, I want to be able to save my last score and last list of input words along with their corresponding point values to file
 - As a user, I want to be able to be able to load my last saved score and last saved list of input words along with their corresponding point values from file. 
+
+**Phase 4: Task 2**
+
+"Thu Nov 25 03:33:35 PST 2021
+Valid word entry cars, 6 added to list of valid entries
+
+Thu Nov 25 03:33:39 PST 2021
+Valid word entry bark, 10 added to list of valid entries
+
+Thu Nov 25 03:33:47 PST 2021
+Game reset. List of valid entries reset
+
+Thu Nov 25 03:33:56 PST 2021
+Valid word entry milk, 10 added to list of valid entries
+
+Thu Nov 25 03:33:59 PST 2021
+Valid word entry xylo, 14 added to list of valid entries
+
+Thu Nov 25 03:34:07 PST 2021
+Valid word entry moon, 6 added to list of valid entries
+
+Thu Nov 25 03:34:15 PST 2021
+Valid word entry mark, 10 added to list of valid entries
+
+Thu Nov 25 03:34:17 PST 2021
+Game reset. List of valid entries reset
+
+Thu Nov 25 03:34:58 PST 2021
+Valid word entry more, 6 added to list of valid entries
+
+Thu Nov 25 03:35:00 PST 2021
+Valid word entry ship, 9 added to list of valid entries
+
+Thu Nov 25 03:35:08 PST 2021
+Valid word entry zone, 13 added to list of valid entries
+
+Thu Nov 25 03:35:11 PST 2021
+Valid word entry bite, 6 added to list of valid entries
+
+Process finished with exit code 0"

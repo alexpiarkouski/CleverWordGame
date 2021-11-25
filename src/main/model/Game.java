@@ -37,6 +37,8 @@ public class Game implements Writable {
         addWordEntry(wordEntry);
         updateScore(wordEntry.getWordValue());
         attempts--;
+        EventLog.getInstance().logEvent(new Event("Valid word entry " + word + ", "
+                + wordEntry.getWordValue() + " added to list of valid entries"));
     }
 
     // REQUIRES: attempts >= 1
@@ -171,4 +173,7 @@ public class Game implements Writable {
         return wordEntries;
     }
 
+    public void logGameReset() {
+        EventLog.getInstance().logEvent(new Event("Game reset. List of valid entries reset"));
+    }
 }
