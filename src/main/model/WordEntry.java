@@ -3,7 +3,6 @@ package model;
 import org.json.JSONObject;
 import persistence.Writable;
 
-import java.util.ArrayList;
 
 // Represents a word entry consisting of a word and the points it is worth
 public class WordEntry implements Writable {

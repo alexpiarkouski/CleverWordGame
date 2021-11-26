@@ -69,3 +69,15 @@ Valid word entry zone, 13 added to list of valid entries
 
 Thu Nov 25 19:15:11 PST 2021
 Valid word entry bite, 6 added to list of valid entries
+
+**"Phase 4: Task 3"**
+
+I believe my Game class combines too much in itself and would benefit from two subclasses that would handle operations
+related to score and operations related to the user word input respectively, leaving the Game class to deal with
+creating wordEntry objects, modifying list of word entries and such.
+
+The WordGame class could also potentially benefit from some division, either into two classes that would handle methods
+related to GUI elements, and their behaviours respectively, or division into multiple classes that would handle tasks 
+executed by different segments of the game similar to how the game is already separated into several panels - 
+results panel, game panel, menu panel. With extra time on hand I would try both and see which one feels like a more
+natural fit 
