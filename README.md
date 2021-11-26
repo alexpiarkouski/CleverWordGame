@@ -31,40 +31,41 @@ As for my interest in the project, I consider myself a member of all 3 groups me
 
 **Phase 4: Task 2**
 
-"Thu Nov 25 03:33:35 PST 2021
+Thu Nov 25 19:14:45 PST 2021
+Valid word entry fish, 10 added to list of valid entries
+
+Thu Nov 25 19:14:48 PST 2021
+Valid word entry carp, 8 added to list of valid entries
+
+Thu Nov 25 19:14:50 PST 2021
+Valid word entry crab, 8 added to list of valid entries
+
+Thu Nov 25 19:14:55 PST 2021
+Game reset. List of valid entries reset
+
+Thu Nov 25 19:14:57 PST 2021
+Valid word entry cats, 6 added to list of valid entries
+
+Thu Nov 25 19:14:59 PST 2021
+Valid word entry dogs, 6 added to list of valid entries
+
+Thu Nov 25 19:15:00 PST 2021
+Valid word entry mice, 8 added to list of valid entries
+
+Thu Nov 25 19:15:02 PST 2021
 Valid word entry cars, 6 added to list of valid entries
 
-Thu Nov 25 03:33:39 PST 2021
-Valid word entry bark, 10 added to list of valid entries
+Thu Nov 25 19:15:11 PST 2021
+Game loaded from file. List of valid entries reset
 
-Thu Nov 25 03:33:47 PST 2021
-Game reset. List of valid entries reset
-
-Thu Nov 25 03:33:56 PST 2021
-Valid word entry milk, 10 added to list of valid entries
-
-Thu Nov 25 03:33:59 PST 2021
-Valid word entry xylo, 14 added to list of valid entries
-
-Thu Nov 25 03:34:07 PST 2021
-Valid word entry moon, 6 added to list of valid entries
-
-Thu Nov 25 03:34:15 PST 2021
-Valid word entry mark, 10 added to list of valid entries
-
-Thu Nov 25 03:34:17 PST 2021
-Game reset. List of valid entries reset
-
-Thu Nov 25 03:34:58 PST 2021
+Thu Nov 25 19:15:11 PST 2021
 Valid word entry more, 6 added to list of valid entries
 
-Thu Nov 25 03:35:00 PST 2021
+Thu Nov 25 19:15:11 PST 2021
 Valid word entry ship, 9 added to list of valid entries
 
-Thu Nov 25 03:35:08 PST 2021
+Thu Nov 25 19:15:11 PST 2021
 Valid word entry zone, 13 added to list of valid entries
 
-Thu Nov 25 03:35:11 PST 2021
+Thu Nov 25 19:15:11 PST 2021
 Valid word entry bite, 6 added to list of valid entries
-
-Process finished with exit code 0"

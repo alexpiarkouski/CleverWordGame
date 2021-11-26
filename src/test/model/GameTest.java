@@ -130,4 +130,14 @@ class GameTest {
         Game newGame = new Game();
         assertEquals(4, newGame.getLetterNum());
     }
+
+    @Test
+    void logGameReset() {
+        // stub
+    }
+
+    @Test
+    void logGameLoad() {
+        // stub
+    }
 }

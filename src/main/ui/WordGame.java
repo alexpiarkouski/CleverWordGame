@@ -224,6 +224,7 @@ public class WordGame extends JPanel implements ActionListener {
     // EFFECTS: loads game from file
     private void loadGame() {
         try {
+            game.logGameLoad();
             game = jsonReader.read();
             statusLabel.setText("Status: " + "Loaded game with score " + game.getScore() + " from " + JSON_STORE);
             refreshScore();

@@ -37,8 +37,6 @@ public class Game implements Writable {
         addWordEntry(wordEntry);
         updateScore(wordEntry.getWordValue());
         attempts--;
-        EventLog.getInstance().logEvent(new Event("Valid word entry " + word + ", "
-                + wordEntry.getWordValue() + " added to list of valid entries"));
     }
 
     // REQUIRES: attempts >= 1
@@ -148,6 +146,8 @@ public class Game implements Writable {
     // EFFECTS: adds wordEntry into the list of wordEntries
     public void addWordEntry(WordEntry wordEntry) {
         wordEntries.add(wordEntry);
+        EventLog.getInstance().logEvent(new Event("Valid word entry " + wordEntry.getWord() + ", "
+                + wordEntry.getWordValue() + " added to list of valid entries"));
     }
 
     // REQUIRES: score is a nonnegative integer
@@ -173,7 +173,15 @@ public class Game implements Writable {
         return wordEntries;
     }
 
+    // MODIFIES: EventLog
+    // EFFECTS: logs new event when game is reset
     public void logGameReset() {
         EventLog.getInstance().logEvent(new Event("Game reset. List of valid entries reset"));
+    }
+
+    // MODIFIES: EventLog
+    // EFFECTS: logs new event when game is laoded from file
+    public void logGameLoad() {
+        EventLog.getInstance().logEvent(new Event("Game loaded from file. List of valid entries reset"));
     }
 }
