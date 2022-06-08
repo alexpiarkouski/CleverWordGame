@@ -109,8 +109,8 @@ class GameTest {
         assertFalse(game.checkIfWordInList(""));
         assertTrue(game.checkIfWordInList("cat"));
         assertTrue(game.checkIfWordInList("cats"));
-        assertTrue(game.checkIfWordInList("zzz"));
-        assertTrue(game.checkIfWordInList("2"));
+        assertFalse(game.checkIfWordInList("zzz"));
+        assertFalse(game.checkIfWordInList("2"));
         assertFalse(game.checkIfWordInList("9999"));
         assertFalse(game.checkIfWordInList("catz"));
     }
@@ -139,5 +139,20 @@ class GameTest {
     @Test
     void logGameLoad() {
         // stub
+    }
+
+    @Test
+    void setHighScore() {
+        game.setHighScore(20);
+        assertEquals(20, game.getHighScore());
+        game.setHighScore(30);
+        assertEquals(30, game.getHighScore());
+    }
+
+    @Test
+    void getHighScore() {
+        game.setHighScore(20);
+        int highscore = game.getHighScore();
+        assertEquals(20, highscore);
     }
 }

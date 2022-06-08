@@ -35,6 +35,12 @@ public class JsonWriter {
         saveToFile(json.toString(TAB));
     }
 
+    public void writeHighScore(int highScore) {
+        JSONObject json = new JSONObject();
+        json.put("high score", highScore);
+        saveToFile(json.toString(TAB));
+    }
+
     // From WorkRoomApp
     // MODIFIES: this
     // EFFECTS: closes writer

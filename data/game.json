@@ -1,17 +1,21 @@
 {
-    "score": 26,
+    "score": 54,
     "word entries": [
         {
-            "word value": 8,
-            "word": "mice"
+            "word value": 10,
+            "word": "bank"
         },
         {
-            "word value": 6,
-            "word": "corn"
+            "word value": 10,
+            "word": "bark"
         },
         {
-            "word value": 12,
-            "word": "puck"
+            "word value": 10,
+            "word": "milk"
+        },
+        {
+            "word value": 24,
+            "word": "buzz"
         }
     ]
 }

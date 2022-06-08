@@ -31,6 +31,14 @@ public class JsonReader {
         return parseGame(jsonObject);
     }
 
+    // EFFECTS: reads workroom from file and returns it;
+    // throws IOException if an error occurs reading data from file
+    public void readHighScore(Game game) throws IOException {
+        String jsonData = readFile(source);
+        JSONObject jsonObject = new JSONObject(jsonData);
+        addHighScore(game, jsonObject);
+    }
+
     // From WorkRoomApp
     // EFFECTS: reads source file as string and returns it
     private String readFile(String source) throws IOException {
@@ -69,6 +77,11 @@ public class JsonReader {
     private void addScore(Game game, JSONObject jsonObject) {
         int score = jsonObject.getInt("score");
         game.updateScore(score);
+    }
+
+    private void addHighScore(Game game, JSONObject jsonObject) {
+        int highScore = jsonObject.getInt("high score");
+        game.setHighScore(highScore);
     }
 
     // Modified from WorkRoomApp

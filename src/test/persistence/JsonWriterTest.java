@@ -72,4 +72,21 @@ class JsonWriterTest extends JsonTest {
             fail("Exception should not have been thrown");
         }
     }
+
+    @Test
+    void testWriterHighScore() {
+        try {
+            Game game = new Game();
+            JsonWriter writer = new JsonWriter("./data/testWriterHighScore.json");
+            writer.open();
+            writer.writeHighScore(42);
+            writer.close();
+
+            JsonReader reader = new JsonReader("./data/testWriterHighScore.json");
+            reader.readHighScore(game);
+            assertEquals(42, game.getHighScore());
+        } catch (IOException e) {
+            fail("Exception should not have been thrown");
+        }
+    }
 }

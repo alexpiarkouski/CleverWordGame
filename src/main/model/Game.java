@@ -4,20 +4,22 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
 // Represents a Clever Word Game round
 public class Game implements Writable {
 
-    private static final File VALID_WORDS_LIST_STORE = new File("./data/words-2.txt");
+    private static final File VALID_WORDS_LIST_STORE = new File("./data/words_alpha_sorted.txt");
     private int score;
+    private int highScore;
     private int attempts;
     private int letterNum;
     private List<WordEntry> wordEntries;
+    private List<String> validWords;
 
     // EFFECTS: new game is created. Score set to 0, empty word entries list.
     public Game() {
@@ -25,7 +27,41 @@ public class Game implements Writable {
         score = 0;
         attempts = 5;
         letterNum = 4;
+        try {
+            txtToList(VALID_WORDS_LIST_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Status: " + "Unable to find file: " + VALID_WORDS_LIST_STORE);
+        }
+    }
 
+    public void txtToList(File file) throws FileNotFoundException {
+        validWords = new ArrayList<>();
+        Scanner scan = new Scanner(file);
+        String validWord;
+        while (scan.hasNext()) {
+            validWord = scan.nextLine().toLowerCase();
+            validWords.add(validWord);
+        }
+        scan.close();
+//        Collections.sort(validWords);
+//        String outputFile = "words_alpha_sorted.txt";
+//        FileWriter fileWriter = null;
+//        try {
+//            fileWriter = new FileWriter(outputFile);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        PrintWriter out = new PrintWriter(fileWriter);
+//        for (String outputLine : validWords) {
+//            out.println(outputLine);
+//        }
+//        out.flush();
+//        out.close();
+//        try {
+//            fileWriter.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     // REQUIRES: attempts >= 1
@@ -58,7 +94,7 @@ public class Game implements Writable {
         return wordValue;
     }
 
-    // EFFECTS: Returns corresponsing point value of each lowercase english letter character
+    // EFFECTS: Returns corresponding point value of each lowercase english letter character
     public int assignLetterPoints(char letter) {
         if (letter == 'a' || letter == 'e' || letter == 'i' || letter == 'o' || letter == 'n'
                 || letter == 'r' || letter == 't' || letter == 'l' || letter == 's' || letter == 'u') {
@@ -88,19 +124,24 @@ public class Game implements Writable {
 
     // EFFECTS: returns true if both the valid english word and letter number conditions of the word are satisfied,
     // else false
-    public boolean checkIfWordValid(String thisWord) {
+    public boolean checkIfWordValidLinear(String thisWord) {
         boolean isWordValid = false;
         try {
-            isWordValid = (checkIfWordInList(thisWord) && checkLetterNum(thisWord));
+            isWordValid = (checkIfWordInListLinear(thisWord) && checkLetterNum(thisWord));
         } catch (FileNotFoundException e) {
             System.out.println("Status: " + "Unable to find file: " + VALID_WORDS_LIST_STORE);
         }
         return isWordValid;
     }
 
+    // EFFECTS: returns true if both the valid english word and letter number conditions of the word are satisfied,
+    // else false
+    public boolean checkIfWordValid(String thisWord) {
+        return checkIfWordInList(thisWord) && checkLetterNum(thisWord);
+    }
 
     // EFFECTS: returns true if given word is found in the eligible word list. Else false
-    public boolean checkIfWordInList(String thisWord) throws FileNotFoundException {
+    public boolean checkIfWordInListLinear(String thisWord) throws FileNotFoundException {
         boolean isWordInList = false;
         Scanner scan = new Scanner(VALID_WORDS_LIST_STORE);
         while (scan.hasNext()) {
@@ -110,6 +151,13 @@ public class Game implements Writable {
             }
         }
         return isWordInList;
+    }
+
+    // EFFECTS: returns true if given word is found in the eligible word list. Else false. Binary search
+    public boolean checkIfWordInList(String thisWord) {
+        int result = Collections.binarySearch(validWords, thisWord);
+        System.out.println(result);
+        return result > -1;
     }
 
     // Modified from WorkRoomApp
@@ -132,7 +180,6 @@ public class Game implements Writable {
 
         return jsonArray;
     }
-
 
     // EFFECTS: returns true if given word is a non-empty string of correct character length
     public boolean checkLetterNum(String thisWord) {
@@ -173,6 +220,16 @@ public class Game implements Writable {
         return wordEntries;
     }
 
+    // EFFECTS: sets high score to highScoreValue
+    public void setHighScore(int highScoreValue) {
+        highScore = highScoreValue;
+    }
+
+    // EFFECTS: returns high score
+    public int getHighScore() {
+        return highScore;
+    }
+
     // MODIFIES: EventLog
     // EFFECTS: logs new event when game is reset
     public void logGameReset() {
@@ -180,7 +237,7 @@ public class Game implements Writable {
     }
 
     // MODIFIES: EventLog
-    // EFFECTS: logs new event when game is laoded from file
+    // EFFECTS: logs new event when game is loaded from file
     public void logGameLoad() {
         EventLog.getInstance().logEvent(new Event("Game loaded from file. List of valid entries reset"));
     }

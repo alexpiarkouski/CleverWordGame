@@ -38,6 +38,18 @@ class JsonReaderTest extends JsonTest {
     }
 
     @Test
+    void testReaderHighScore() {
+        JsonReader reader = new JsonReader("./data/testReaderHighScore.json");
+        Game game = new Game();
+        try {
+            reader.readHighScore(game);
+            assertEquals(42, game.getHighScore());
+        } catch (IOException e) {
+            fail("Couldn't read from file");
+        }
+    }
+
+    @Test
     void testReaderGeneralGame() {
         JsonReader reader = new JsonReader("./data/testReaderGeneralGame.json");
         try {

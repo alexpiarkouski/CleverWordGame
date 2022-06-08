@@ -21,6 +21,7 @@ public class WordGame extends JPanel implements ActionListener {
 
     // Some fields modified from WorkRoomApp and Traffic Light problem
     private static final String JSON_STORE = "./data/game.json";
+    private static final String JSON_STORE_HIGH_SCORE = "./data/highscore.json";
     private static final ImageIcon iconBad = new ImageIcon("./data/icon-bad.gif");
     private static final ImageIcon iconGood = new ImageIcon("./data/icon-good.gif");
     private static final ImageIcon iconGreat = new ImageIcon("./data/icon-great.gif");
@@ -32,6 +33,8 @@ public class WordGame extends JPanel implements ActionListener {
     private Game game;
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
+    private JsonWriter jsonWriterHighScore;
+    private JsonReader jsonReaderHighScore;
 
     private JFrame frame;
 
@@ -83,12 +86,15 @@ public class WordGame extends JPanel implements ActionListener {
         initGamePanel();
         initResultsPanel();
 
+        loadHighScore();
+
         frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.LINE_AXIS));
         frame.addWindowListener(windowAdapter);
 
         //Display the window.
         frame.setSize(WIDTH, HEIGHT);
         frame.setVisible(true);
+        textField.requestFocusInWindow();
     }
 
     // MODIFIES: this
@@ -119,10 +125,12 @@ public class WordGame extends JPanel implements ActionListener {
 
     // modified from TellerApp and WorkRoomApp
     // MODIFIES: this
-    // EFFECTS: initializes Json Reader and Writer
+    // EFFECTS: initializes Json Readers and Writers
     private void initJson() {
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
+        jsonWriterHighScore = new JsonWriter(JSON_STORE_HIGH_SCORE);
+        jsonReaderHighScore = new JsonReader(JSON_STORE_HIGH_SCORE);
     }
 
     // MODIFIES: this
@@ -131,7 +139,7 @@ public class WordGame extends JPanel implements ActionListener {
         JPanel entryListPanel = new JPanel();
 
         entryListModel = new DefaultListModel<>();
-        //listModel.addElement("<no words>");
+        entryListModel.addElement("<no words>");
         JList<String> list = new JList<>(entryListModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setVisibleRowCount(5);
@@ -234,6 +242,26 @@ public class WordGame extends JPanel implements ActionListener {
         }
     }
 
+    private void loadHighScore() {
+        try {
+            jsonReaderHighScore.readHighScore(game);
+        } catch (IOException e) {
+            statusLabel.setText("Status: " + "Unable to read high score from file: " + JSON_STORE_HIGH_SCORE);
+        }
+    }
+
+    // MODIFIES: game.json high score
+    // EFFECTS: saves high score to file
+    private void saveHighScore(int highScore) {
+        try {
+            jsonWriterHighScore.open();
+            jsonWriterHighScore.writeHighScore(highScore);
+            jsonWriterHighScore.close();
+        } catch (FileNotFoundException e) {
+            statusLabel.setText("Status: " + "Unable to save to file: " + JSON_STORE_HIGH_SCORE);
+        }
+    }
+
     // EFFECTS: displays word entries from the previous game
     private void lastSet() {
         resultsTitleLabel.setText("Last valid game set ");
@@ -258,6 +286,9 @@ public class WordGame extends JPanel implements ActionListener {
             textField.requestFocusInWindow();
             textField.selectAll();
         } else {
+            if (game.getWordEntryList().isEmpty()) {
+                entryListModel.removeAllElements();
+            }
             game.enterValidWord(word);
             entryListModel.addElement(word);
             refreshScore();
@@ -279,22 +310,28 @@ public class WordGame extends JPanel implements ActionListener {
         resultsTitleLabel.setText("Your valid game set is ");
         getWordEntries();
         if (game.getScore() < GOOD_SCORE_CUTOFF) {
-            endGameDialogue(iconBad);
+            endGameDialogue("Game over. Your final score is ", iconBad);
         } else if (game.getScore() < GREAT_SCORE_CUTOFF) {
-            endGameDialogue(iconGood);
+            endGameDialogue("Good job! Your final score is ", iconGood);
+        } else if (game.getScore() > game.getHighScore()) {
+            saveHighScore(game.getScore());
+            game.setHighScore(game.getScore());
+            endGameDialogue("<html>" + "Wow! New high score! Saved it at " + JSON_STORE_HIGH_SCORE
+                            + "<br/>" + " Your final score is ", iconGreat);
         } else {
-            endGameDialogue(iconGreat);
+            endGameDialogue("Great job. Your final score is ", iconGreat);
         }
     }
 
     // MODIFIES: this
     // EFFECTS: creates end game dialogue window with score, text and image
-    private void endGameDialogue(ImageIcon icon) {
+    private void endGameDialogue(String message, ImageIcon icon) {
         JOptionPane.showMessageDialog(frame,
-                "Game over. Your final score is " + game.getScore(),
+                message + game.getScore(),
                 "Game Over!",
                 JOptionPane.INFORMATION_MESSAGE,
                 icon);
+        statusLabel.setText("<html>" + "Game over!" + "<br/>" + "Reset to play again");
     }
 
     // EFFECTS: displays recorded word entries
@@ -332,6 +369,8 @@ public class WordGame extends JPanel implements ActionListener {
             entryListModel.addElement("<no words>");
             resultsListModel.removeAllElements();
             resultsListModel.addElement("<no data>");
+            textField.setText("");
+            textField.requestFocusInWindow();
             statusLabel.setText("<html>" + "New game started. " + "<br/>"
                     + game.getAttempts() + " attempts left. " + "<br/>"
                     + "Enter a " + game.getLetterNum() + "-letter word");
