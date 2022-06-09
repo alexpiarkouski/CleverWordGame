@@ -137,7 +137,20 @@ public class Game implements Writable {
     // EFFECTS: returns true if both the valid english word and letter number conditions of the word are satisfied,
     // else false
     public boolean checkIfWordValid(String thisWord) {
-        return checkIfWordInList(thisWord) && checkLetterNum(thisWord);
+        return checkIfWordInList(thisWord) && checkLetterNum(thisWord) && checkDuplicates(thisWord);
+    }
+
+    // EFFECTS: returns true if wordEntries does not contain a word entry with word value that equals thisWord
+    private boolean checkDuplicates(String thisWord) {
+        if (wordEntries.isEmpty()) {
+            return true;
+        }
+        for (WordEntry wordEntry : wordEntries) {
+            if (wordEntry.getWord().equals(thisWord)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     // EFFECTS: returns true if given word is found in the eligible word list. Else false
