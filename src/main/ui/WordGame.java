@@ -183,6 +183,7 @@ public class WordGame extends JPanel implements ActionListener {
         gamePanel.add(Box.createRigidArea(new Dimension(10, 0)));
         gamePanel.add(enterButton);
         gamePanel.add(scoreLabel);
+        gamePanel.add(Box.createRigidArea(new Dimension(10, 0)));
 
         frame.add(gamePanel);
     }
@@ -208,6 +209,7 @@ public class WordGame extends JPanel implements ActionListener {
         resultsPanel.setLayout(new BoxLayout(resultsPanel, BoxLayout.PAGE_AXIS));
         resultsPanel.add(resultsTitleLabel);
         resultsPanel.add(listScrollPane);
+        resultsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         resultsPanel.add(statusLabel);
 
         frame.add(resultsPanel);
