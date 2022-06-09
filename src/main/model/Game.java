@@ -141,7 +141,7 @@ public class Game implements Writable {
     }
 
     // EFFECTS: returns true if wordEntries does not contain a word entry with word value that equals thisWord
-    private boolean checkDuplicates(String thisWord) {
+    public boolean checkDuplicates(String thisWord) {
         if (wordEntries.isEmpty()) {
             return true;
         }

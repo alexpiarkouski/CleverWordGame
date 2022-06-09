@@ -24,10 +24,10 @@ public class WordGame extends JPanel implements ActionListener {
     private static final String JSON_STORE_HIGH_SCORE = "./data/highscore.json";
     private static final ImageIcon iconBad = new ImageIcon("./data/icon-bad.gif");
     private static final ImageIcon iconGood = new ImageIcon("./data/icon-good.gif");
-    private static final ImageIcon iconGreat = new ImageIcon("./data/icon-great.gif");
-    private static final int GOOD_SCORE_CUTOFF = 1;
-    private static final int GREAT_SCORE_CUTOFF = 30;
-    private static final int WIDTH = 1000;
+    private static final ImageIcon iconGreat = new ImageIcon("./data/icon-great-still.gif");
+    private static final int GOOD_SCORE_CUTOFF = 10;
+    private static final int GREAT_SCORE_CUTOFF = 40;
+    private static final int WIDTH = 800;
     private static final int HEIGHT = 250;
 
     private Game game;
@@ -66,7 +66,6 @@ public class WordGame extends JPanel implements ActionListener {
     // EFFECTS: Creates game window frame, calls methods to initialize app panels, adds panels to frame
     public void runWordGame() {
         game = new Game();
-
         frame = new JFrame("Clever Word Game");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         WindowAdapter windowAdapter = new WindowAdapter() {
@@ -81,7 +80,7 @@ public class WordGame extends JPanel implements ActionListener {
 
         initJson();
         initMenuButtonPanel();
-        initEntryListPanel();
+        //initEntryListPanel();
         initTextFieldPanel();
         initGamePanel();
         initResultsPanel();
@@ -93,6 +92,7 @@ public class WordGame extends JPanel implements ActionListener {
 
         //Display the window.
         frame.setSize(WIDTH, HEIGHT);
+        //frame.setResizable(false);
         frame.setVisible(true);
         textField.requestFocusInWindow();
     }
@@ -165,8 +165,10 @@ public class WordGame extends JPanel implements ActionListener {
         JLabel textFieldLabel = new JLabel("Text Entry Area");
 
         textFieldPanel.setLayout(new BoxLayout(textFieldPanel, BoxLayout.PAGE_AXIS));
+        textFieldPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         textFieldPanel.add(textFieldLabel);
         textFieldPanel.add(textField);
+        textFieldPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
         frame.add(textFieldPanel);
     }
@@ -180,12 +182,11 @@ public class WordGame extends JPanel implements ActionListener {
         scoreLabel = new JLabel("Current Score: " + game.getScore());
 
         gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.LINE_AXIS));
-        gamePanel.add(Box.createRigidArea(new Dimension(10, 0)));
         gamePanel.add(enterButton);
         gamePanel.add(scoreLabel);
-        gamePanel.add(Box.createRigidArea(new Dimension(10, 0)));
 
         frame.add(gamePanel);
+        frame.add(Box.createRigidArea(new Dimension(10, 0)));
     }
 
 
@@ -194,7 +195,7 @@ public class WordGame extends JPanel implements ActionListener {
     private void initResultsPanel() {
         JPanel resultsPanel = new JPanel();
 
-        resultsTitleLabel = new JLabel("Results Panel");
+        resultsTitleLabel = new JLabel("Current Entries");
         statusLabel = new JLabel("<html>" + "New game started. " + "<br/>"
                 + game.getAttempts() + " attempts left. " + "<br/>"
                 + "Enter a " + game.getLetterNum() + "-letter word");
@@ -207,12 +208,16 @@ public class WordGame extends JPanel implements ActionListener {
         JScrollPane listScrollPane = new JScrollPane(resultsList);
 
         resultsPanel.setLayout(new BoxLayout(resultsPanel, BoxLayout.PAGE_AXIS));
+        resultsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         resultsPanel.add(resultsTitleLabel);
+        resultsPanel.add(Box.createRigidArea(new Dimension(0, 3)));
         resultsPanel.add(listScrollPane);
         resultsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         resultsPanel.add(statusLabel);
+        resultsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
         frame.add(resultsPanel);
+        frame.add(Box.createRigidArea(new Dimension(5, 0)));
     }
 
     // Modified from WorkRoomApp
@@ -237,13 +242,19 @@ public class WordGame extends JPanel implements ActionListener {
             game.logGameLoad();
             game = jsonReader.read();
             statusLabel.setText("Status: " + "Loaded game with score " + game.getScore() + " from " + JSON_STORE);
-            refreshScore();
+            //refreshScore();
+            resultsListModel.removeAllElements();
+            resultsListModel.addElement("<no value>");
+            resultsTitleLabel.setText("Current Entries");
+            scoreLabel.setText("Current Score: 0");
             enterButton.setEnabled(false);
         } catch (IOException e) {
             statusLabel.setText("Status: " + "Unable to read from file: " + JSON_STORE);
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: loads high score from file
     private void loadHighScore() {
         try {
             jsonReaderHighScore.readHighScore(game);
@@ -289,10 +300,10 @@ public class WordGame extends JPanel implements ActionListener {
             textField.selectAll();
         } else {
             if (game.getWordEntryList().isEmpty()) {
-                entryListModel.removeAllElements();
+                resultsListModel.removeAllElements();
             }
             game.enterValidWord(word);
-            entryListModel.addElement(word);
+            resultsListModel.addElement(word);
             refreshScore();
             textField.setText("");
             textField.requestFocusInWindow();
@@ -304,6 +315,7 @@ public class WordGame extends JPanel implements ActionListener {
             endGameMessage();
             enterButton.setEnabled(false);
             accessMenuButtonsInGame(true);
+            //resultsTitleLabel.setText("Results");
         }
     }
 
@@ -367,8 +379,10 @@ public class WordGame extends JPanel implements ActionListener {
             game = new Game();
             game.logGameReset();
             enterButton.setEnabled(true);
-            entryListModel.removeAllElements();
-            entryListModel.addElement("<no words>");
+            accessMenuButtonsInGame(true);
+            //entryListModel.removeAllElements();
+            //entryListModel.addElement("<no words>");
+            resultsTitleLabel.setText("Current Entries");
             resultsListModel.removeAllElements();
             resultsListModel.addElement("<no data>");
             textField.setText("");
@@ -376,7 +390,7 @@ public class WordGame extends JPanel implements ActionListener {
             statusLabel.setText("<html>" + "New game started. " + "<br/>"
                     + game.getAttempts() + " attempts left. " + "<br/>"
                     + "Enter a " + game.getLetterNum() + "-letter word");
-            resultsTitleLabel.setText("Results");
+            //resultsTitleLabel.setText("Results");
             refreshScore();
         });
     }

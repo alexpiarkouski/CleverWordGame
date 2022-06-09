@@ -1,21 +1,21 @@
 {
-    "score": 54,
+    "score": 30,
     "word entries": [
         {
-            "word value": 10,
-            "word": "bank"
-        },
-        {
-            "word value": 10,
-            "word": "bark"
+            "word value": 6,
+            "word": "mine"
         },
         {
             "word value": 10,
             "word": "milk"
         },
         {
-            "word value": 24,
-            "word": "buzz"
+            "word value": 8,
+            "word": "pups"
+        },
+        {
+            "word value": 6,
+            "word": "cats"
         }
     ]
 }

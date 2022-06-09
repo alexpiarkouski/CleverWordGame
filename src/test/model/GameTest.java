@@ -87,20 +87,37 @@ class GameTest {
         assertEquals(game.checkIfWordInList("cats")
                         && game.checkLetterNum("cats"),
                 game.checkIfWordValid("cats"));
+
         assertEquals(game.checkIfWordInList("cat")
                         && game.checkLetterNum("cat"),
                 game.checkIfWordValid("cat"));
+
         assertFalse(game.checkIfWordValid("monkey"));
         assertFalse(game.checkIfWordValid("abcdefghijklmnopqrstuvwxyz"));
+
         assertEquals(game.checkIfWordInList("9999")
                         && game.checkLetterNum("9999"),
                 game.checkIfWordValid("9999"));
+
         assertEquals(game.checkIfWordInList("999")
                         && game.checkLetterNum("999"),
                 game.checkIfWordValid("999"));
+
         assertEquals(game.checkIfWordInList("")
                 && game.checkLetterNum(""),
                 game.checkIfWordValid(""));
+
+        game.enterValidWord("dogs");
+
+        assertEquals(game.checkDuplicates("dogs")
+                && game.checkIfWordInList("dogs")
+                        && game.checkLetterNum("dogs"),
+                game.checkIfWordValid("dogs"));
+
+        assertEquals(game.checkDuplicates("cats")
+                        && game.checkIfWordInList("cats")
+                        && game.checkLetterNum("cats"),
+                game.checkIfWordValid("cats"));
     }
 
     @Test
@@ -122,6 +139,17 @@ class GameTest {
         assertFalse(game.checkLetterNum(""));
         assertFalse(game.checkLetterNum("monkey"));
         assertTrue(game.checkLetterNum("    "));
+    }
+
+    @Test
+    void testCheckDuplicates() {
+        assertTrue(game.checkDuplicates("cats"));
+        game.enterValidWord("cats");
+        assertFalse(game.checkDuplicates("cats"));
+        assertTrue(game.checkDuplicates("dogs"));
+        game.enterValidWord("dogs");
+        assertFalse(game.checkDuplicates("dogs"));
+
     }
 
     @Test
