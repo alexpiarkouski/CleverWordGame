@@ -1,21 +1,25 @@
 {
-    "score": 30,
+    "score": 44,
     "word entries": [
         {
-            "word value": 6,
-            "word": "mine"
+            "word value": 10,
+            "word": "mark"
+        },
+        {
+            "word value": 10,
+            "word": "wolf"
+        },
+        {
+            "word value": 10,
+            "word": "mike"
+        },
+        {
+            "word value": 4,
+            "word": "lore"
         },
         {
             "word value": 10,
             "word": "milk"
-        },
-        {
-            "word value": 8,
-            "word": "pups"
-        },
-        {
-            "word value": 6,
-            "word": "cats"
         }
     ]
 }

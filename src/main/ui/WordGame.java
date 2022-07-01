@@ -27,8 +27,8 @@ public class WordGame extends JPanel implements ActionListener {
     private static final ImageIcon iconGreat = new ImageIcon("./data/icon-great-still.gif");
     private static final int GOOD_SCORE_CUTOFF = 10;
     private static final int GREAT_SCORE_CUTOFF = 40;
-    private static final int WIDTH = 800;
-    private static final int HEIGHT = 250;
+    private static final int WIDTH = 550;
+    private static final int HEIGHT = 225;
 
     private Game game;
     private JsonWriter jsonWriter;
@@ -37,19 +37,20 @@ public class WordGame extends JPanel implements ActionListener {
     private JsonReader jsonReaderHighScore;
 
     private JFrame frame;
+    private JPanel topLevelPanel;
 
-    private DefaultListModel<String> entryListModel;
     private DefaultListModel<String> resultsListModel;
     private JTextField textField;
 
     private JButton enterButton;
     private JButton resetButton;
-    private JButton scoreButton;
+    //private JButton scoreButton;
     private JButton lastSetButton;
     private JButton saveButton;
     private JButton loadButton;
 
     private JLabel scoreLabel;
+    private JLabel attemptsLabel;
     private JLabel statusLabel;
     private JLabel resultsTitleLabel;
 
@@ -78,16 +79,24 @@ public class WordGame extends JPanel implements ActionListener {
             }
         };
 
+        //initTopLevelPanel();
+        topLevelPanel = new JPanel();
+        topLevelPanel.setLayout(new BoxLayout(topLevelPanel, BoxLayout.LINE_AXIS));
+        //topLevelPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+
         initJson();
         initMenuButtonPanel();
         //initEntryListPanel();
-        initTextFieldPanel();
+        //initTextFieldPanel();
         initGamePanel();
-        initResultsPanel();
+        //initResultsPanel();
+
+        frame.add(topLevelPanel);
 
         loadHighScore();
 
-        frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.LINE_AXIS));
+        //frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.LINE_AXIS));
+        frame.setLayout(new FlowLayout(FlowLayout.CENTER));
         frame.addWindowListener(windowAdapter);
 
         //Display the window.
@@ -104,22 +113,24 @@ public class WordGame extends JPanel implements ActionListener {
         menuButtonPanel.setLayout(new BoxLayout(menuButtonPanel, BoxLayout.PAGE_AXIS));
 
         makeResetButton();
-        makeScoreButton();
+        //makeScoreButton();
         makeLastSetButton();
         makeSaveButton();
         makeLoadButton();
 
         menuButtonPanel.add(resetButton);
         menuButtonPanel.add(Box.createRigidArea(new Dimension(10, 10)));
-        menuButtonPanel.add(scoreButton);
-        menuButtonPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+        //menuButtonPanel.add(scoreButton);
+        //menuButtonPanel.add(Box.createRigidArea(new Dimension(10, 10)));
         menuButtonPanel.add(lastSetButton);
         menuButtonPanel.add(Box.createRigidArea(new Dimension(10, 10)));
         menuButtonPanel.add(saveButton);
         menuButtonPanel.add(Box.createRigidArea(new Dimension(10, 10)));
         menuButtonPanel.add(loadButton);
 
-        frame.add(menuButtonPanel);
+        topLevelPanel.add(menuButtonPanel);
+        topLevelPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+
 
     }
 
@@ -134,90 +145,113 @@ public class WordGame extends JPanel implements ActionListener {
     }
 
     // MODIFIES: this
-    // EFFECTS: Initializes List of Entries Panel
-    private void initEntryListPanel() {
-        JPanel entryListPanel = new JPanel();
+    // EFFECTS: initializes Game Panel - Score and Enter Buttons
+    private void initGamePanel() {
+        JPanel gameStatusPanel = new JPanel();
+        JPanel gamePanel = new JPanel();
+        //makeEnterButton();
 
-        entryListModel = new DefaultListModel<>();
-        entryListModel.addElement("<no words>");
-        JList<String> list = new JList<>(entryListModel);
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.setVisibleRowCount(5);
-        JScrollPane listScrollPane = new JScrollPane(list); // to make list visible at all times event when empty
+        //scoreLabel = new JLabel("Current Score: " + game.getScore());
 
-        JLabel entryListLabel = new JLabel("Current Entries");
+        statusLabel = new JLabel("<html>" + "New game started. " + "<br/>"
+                + "Enter a " + game.getLetterNum() + "-letter word");
+        statusLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        entryListPanel.setLayout(new BoxLayout(entryListPanel, BoxLayout.PAGE_AXIS));
-        entryListPanel.add(entryListLabel);
-        entryListPanel.add(listScrollPane);
+        gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.LINE_AXIS));
+        gamePanel.add(initTextFieldPanel());
+        gamePanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        gamePanel.add(initResultsPanel());
+        gamePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        gamePanel.add(Box.createHorizontalGlue());
 
-        frame.add(entryListPanel);
+        gameStatusPanel.setLayout(new BoxLayout(gameStatusPanel, BoxLayout.PAGE_AXIS));
+        gameStatusPanel.add(gamePanel);
+        gameStatusPanel.add(statusLabel);
+        //gamePanel.add(enterButton);
+        //gamePanel.add(scoreLabel);
+
+        topLevelPanel.add(gameStatusPanel);
     }
 
     // MODIFIES: this
     // EFFECTS: Initializes Text Field Panel
-    private void initTextFieldPanel() {
+    private JPanel initTextFieldPanel() {
         JPanel textFieldPanel = new JPanel();
+        JPanel textFieldEnterPanel = new JPanel();
 
         textField = new JTextField(10);
         textField.addActionListener(this);
+        textField.setMinimumSize(new Dimension(150, 25));
+        textField.setPreferredSize(new Dimension(150, 25));
+        textField.setMaximumSize(new Dimension(150, 25));
 
         JLabel textFieldLabel = new JLabel("Text Entry Area");
-
-        textFieldPanel.setLayout(new BoxLayout(textFieldPanel, BoxLayout.PAGE_AXIS));
-        textFieldPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-        textFieldPanel.add(textFieldLabel);
-        textFieldPanel.add(textField);
-        textFieldPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-        frame.add(textFieldPanel);
-    }
-
-    // MODIFIES: this
-    // EFFECTS: initializes Game Panel - Score and Enter Buttons
-    private void initGamePanel() {
-        JPanel gamePanel = new JPanel();
+        scoreLabel = new JLabel("Current Score: " + game.getScore());
+        attemptsLabel = new JLabel("Attempts: " + game.getAttempts());
+        JLabel statusTitleLabel = new JLabel("Status:");
         makeEnterButton();
 
-        scoreLabel = new JLabel("Current Score: " + game.getScore());
+        textFieldLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        textFieldEnterPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        scoreLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        attemptsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        statusTitleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.LINE_AXIS));
-        gamePanel.add(enterButton);
-        gamePanel.add(scoreLabel);
+        textFieldEnterPanel.setLayout(new BoxLayout(textFieldEnterPanel, BoxLayout.LINE_AXIS));
+        textFieldEnterPanel.add(textField);
+        textFieldEnterPanel.add(enterButton);
 
-        frame.add(gamePanel);
-        frame.add(Box.createRigidArea(new Dimension(10, 0)));
+        textFieldPanel.setLayout(new BoxLayout(textFieldPanel, BoxLayout.PAGE_AXIS));
+        textFieldPanel.add(textFieldLabel);
+        textFieldPanel.add(textFieldEnterPanel);
+        textFieldPanel.add(scoreLabel);
+        textFieldPanel.add(attemptsLabel);
+        textFieldPanel.add(Box.createVerticalGlue());
+        textFieldPanel.add(statusTitleLabel);
+
+        textFieldPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+
+        return textFieldPanel;
+        //topLevelPanel.add(textFieldPanel);
     }
-
 
     // MODIFIES: this
     // EFFECTS: initializes Results Panel and the status bar it contains
-    private void initResultsPanel() {
+    private JPanel initResultsPanel() {
         JPanel resultsPanel = new JPanel();
 
-        resultsTitleLabel = new JLabel("Current Entries");
-        statusLabel = new JLabel("<html>" + "New game started. " + "<br/>"
-                + game.getAttempts() + " attempts left. " + "<br/>"
-                + "Enter a " + game.getLetterNum() + "-letter word");
+        resultsTitleLabel = new JLabel("Valid Entries");
+        //statusLabel = new JLabel("<html>" + "New game started. " + "<br/>"
+        //        + game.getAttempts() + " attempts left. " + "<br/>"
+        //        + "Enter a " + game.getLetterNum() + "-letter word");
 
         resultsListModel = new DefaultListModel<>();
         resultsListModel.addElement("<no data>");
         JList<String> resultsList = new JList<>(resultsListModel);
         resultsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        resultsList.setVisibleRowCount(5);
+        resultsList.setVisibleRowCount(game.getAttempts());
         JScrollPane listScrollPane = new JScrollPane(resultsList);
+        listScrollPane.setMinimumSize(new Dimension(100, 105));
+        listScrollPane.setPreferredSize(new Dimension(100, 105));
+        listScrollPane.setMaximumSize(new Dimension(100, 150));
+
+        resultsTitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        listScrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         resultsPanel.setLayout(new BoxLayout(resultsPanel, BoxLayout.PAGE_AXIS));
-        resultsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        //resultsPanel.add(Box.createVerticalGlue());
         resultsPanel.add(resultsTitleLabel);
         resultsPanel.add(Box.createRigidArea(new Dimension(0, 3)));
         resultsPanel.add(listScrollPane);
-        resultsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-        resultsPanel.add(statusLabel);
-        resultsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        resultsPanel.add(Box.createVerticalGlue());
+        //resultsPanel.add(statusLabel);
+        //resultsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-        frame.add(resultsPanel);
-        frame.add(Box.createRigidArea(new Dimension(5, 0)));
+        //topLevelPanel.add(resultsPanel);
+        //topLevelPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+        resultsPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+
+        return resultsPanel;
     }
 
     // Modified from WorkRoomApp
@@ -228,9 +262,9 @@ public class WordGame extends JPanel implements ActionListener {
             jsonWriter.open();
             jsonWriter.write(game);
             jsonWriter.close();
-            statusLabel.setText("Status: " + "Saved game with score " + game.getScore() + " to " + JSON_STORE);
+            statusLabel.setText("Saved game with score " + game.getScore() + " to " + JSON_STORE);
         } catch (FileNotFoundException e) {
-            statusLabel.setText("Status: " + "Unable to save to file: " + JSON_STORE);
+            statusLabel.setText("Unable to save to file: " + JSON_STORE);
         }
     }
 
@@ -241,15 +275,15 @@ public class WordGame extends JPanel implements ActionListener {
         try {
             game.logGameLoad();
             game = jsonReader.read();
-            statusLabel.setText("Status: " + "Loaded game with score " + game.getScore() + " from " + JSON_STORE);
+            statusLabel.setText("Loaded game with score " + game.getScore() + " from " + JSON_STORE);
             //refreshScore();
             resultsListModel.removeAllElements();
-            resultsListModel.addElement("<no value>");
-            resultsTitleLabel.setText("Current Entries");
+            resultsListModel.addElement("<no data>");
+            resultsTitleLabel.setText("Valid Entries");
             scoreLabel.setText("Current Score: 0");
             enterButton.setEnabled(false);
         } catch (IOException e) {
-            statusLabel.setText("Status: " + "Unable to read from file: " + JSON_STORE);
+            statusLabel.setText("Unable to read from file: " + JSON_STORE);
         }
     }
 
@@ -259,7 +293,7 @@ public class WordGame extends JPanel implements ActionListener {
         try {
             jsonReaderHighScore.readHighScore(game);
         } catch (IOException e) {
-            statusLabel.setText("Status: " + "Unable to read high score from file: " + JSON_STORE_HIGH_SCORE);
+            statusLabel.setText("Unable to read high score from file: " + JSON_STORE_HIGH_SCORE);
         }
     }
 
@@ -271,20 +305,21 @@ public class WordGame extends JPanel implements ActionListener {
             jsonWriterHighScore.writeHighScore(highScore);
             jsonWriterHighScore.close();
         } catch (FileNotFoundException e) {
-            statusLabel.setText("Status: " + "Unable to save to file: " + JSON_STORE_HIGH_SCORE);
+            statusLabel.setText("Unable to save to file: " + JSON_STORE_HIGH_SCORE);
         }
     }
 
     // EFFECTS: displays word entries from the previous game
     private void lastSet() {
-        resultsTitleLabel.setText("Last valid game set ");
+        //resultsTitleLabel.setText("Last valid game set ");
+        statusLabel.setText("Last final score is: " + game.getScore());
         getWordEntries();
     }
 
     // EFFECTS: displays point score from the previous game
-    private void lastScore() {
-        statusLabel.setText("Status: " + "Last final score is: " + game.getScore());
-    }
+//    private void lastScore() {
+//        statusLabel.setText("Last final score is: " + game.getScore());
+//    }
 
     // REQUIRES: attempts >=0
     // EFFECTS: executes and prints the gameplay interface. Prints number of attempts left,
@@ -294,7 +329,7 @@ public class WordGame extends JPanel implements ActionListener {
         String word = textField.getText();
         if (!(game.checkIfWordValid(word))) {
             game.enterInvalidWord();
-            statusLabel.setText("Status: " + "Invalid Word");
+            statusLabel.setText("Invalid Word");
             Toolkit.getDefaultToolkit().beep();
             textField.requestFocusInWindow();
             textField.selectAll();
@@ -307,12 +342,15 @@ public class WordGame extends JPanel implements ActionListener {
             refreshScore();
             textField.setText("");
             textField.requestFocusInWindow();
-            statusLabel.setText("Status: " + "Valid Word");
+            statusLabel.setText("Valid Word");
         }
-        statusLabel.setText("<html>" + statusLabel.getText() + "<br/>" + game.getAttempts() + " attempts left. "
+        attemptsLabel.setText("Attempts: " + game.getAttempts());
+        statusLabel.setText("<html>" + statusLabel.getText()
                         + "<br/>" + "Enter a " + game.getLetterNum() + "-letter word" + "<html>");
         if (game.getAttempts() == 0) {
             endGameMessage();
+            //textField.setFocusable(false);
+            resetButton.requestFocusInWindow();
             enterButton.setEnabled(false);
             accessMenuButtonsInGame(true);
             //resultsTitleLabel.setText("Results");
@@ -321,7 +359,7 @@ public class WordGame extends JPanel implements ActionListener {
 
     // EFFECTS: calls game dialogue with varying images depending on score value and shows final game set
     private void endGameMessage() {
-        resultsTitleLabel.setText("Your valid game set is ");
+        resultsTitleLabel.setText("Results");
         getWordEntries();
         if (game.getScore() < GOOD_SCORE_CUTOFF) {
             endGameDialogue("Game over. Your final score is ", iconBad);
@@ -351,8 +389,9 @@ public class WordGame extends JPanel implements ActionListener {
     // EFFECTS: displays recorded word entries
     private void getWordEntries() {
         resultsListModel.removeAllElements();
+        resultsTitleLabel.setText("Last Entries");
         if (game.getWordEntryList().size() == 0) {
-            resultsTitleLabel.setText("Your valid game set is: empty game");
+            statusLabel.setText("Your valid game set is: empty game");
             resultsListModel.addElement("<no data>");
         } else {
             for (WordEntry wordEntry : game.getWordEntryList()) {
@@ -364,7 +403,7 @@ public class WordGame extends JPanel implements ActionListener {
 
     // EFFECTS: Sets whether menu buttons are enabled equal to onOffStatus (excluding reset button)
     private void accessMenuButtonsInGame(boolean onOffStatus) {
-        scoreButton.setEnabled(onOffStatus);
+        //scoreButton.setEnabled(onOffStatus);
         lastSetButton.setEnabled(onOffStatus);
         saveButton.setEnabled(onOffStatus);
         loadButton.setEnabled(onOffStatus);
@@ -380,28 +419,25 @@ public class WordGame extends JPanel implements ActionListener {
             game.logGameReset();
             enterButton.setEnabled(true);
             accessMenuButtonsInGame(true);
-            //entryListModel.removeAllElements();
-            //entryListModel.addElement("<no words>");
-            resultsTitleLabel.setText("Current Entries");
+            resultsTitleLabel.setText("Valid Entries");
             resultsListModel.removeAllElements();
             resultsListModel.addElement("<no data>");
             textField.setText("");
+            //textField.setFocusable(true);
             textField.requestFocusInWindow();
             statusLabel.setText("<html>" + "New game started. " + "<br/>"
-                    + game.getAttempts() + " attempts left. " + "<br/>"
                     + "Enter a " + game.getLetterNum() + "-letter word");
-            //resultsTitleLabel.setText("Results");
             refreshScore();
         });
     }
 
     // Modified from Traffic Light Project
     // EFFECTS: Creates a last score button and defines associated action - display last score
-    private void makeScoreButton() {
-        scoreButton = new JButton("Last Score");
-        scoreButton.setActionCommand("score");
-        scoreButton.addActionListener(e -> lastScore());
-    }
+//    private void makeScoreButton() {
+//        scoreButton = new JButton("Last Score");
+//        scoreButton.setActionCommand("score");
+//        scoreButton.addActionListener(e -> lastScore());
+//    }
 
     // Modified from Traffic Light Project
     // EFFECTS: Creates a last game set button and defines associated action - display last game set
@@ -427,17 +463,16 @@ public class WordGame extends JPanel implements ActionListener {
         loadButton.addActionListener(e -> loadGame());
     }
 
-    // Modified from Traffic Light Project
     // EFFECTS: Creates an enter button and defines associated action - play game by entering a word
     private void makeEnterButton() {
-        enterButton = new JButton("Enter Word");
+        enterButton = new JButton("↵");
         enterButton.setEnabled(true);
         enterButton.setActionCommand("advance");
         enterButton.addActionListener(e -> playGame());
 
     }
 
-    // EFFECTS: updates scoreLabel with latest score
+    // EFFECTS: updates scoreLabel with the latest score
     private void refreshScore() {
         scoreLabel.setText("Current Score: " + game.getScore());
     }
