@@ -119,20 +119,20 @@ public class Game implements Writable {
     // MODIFIES: this
     // EFFECTS: adds wordValue to score
     public void updateScore(int wordValue) {
-        score = score + wordValue;
+        score += wordValue;
     }
 
     // EFFECTS: returns true if both the valid english word and letter number conditions of the word are satisfied,
     // else false
-    public boolean checkIfWordValidLinear(String thisWord) {
-        boolean isWordValid = false;
-        try {
-            isWordValid = (checkIfWordInListLinear(thisWord) && checkLetterNum(thisWord));
-        } catch (FileNotFoundException e) {
-            System.out.println("Status: " + "Unable to find file: " + VALID_WORDS_LIST_STORE);
-        }
-        return isWordValid;
-    }
+//    public boolean checkIfWordValidLinear(String thisWord) {
+//        boolean isWordValid = false;
+//        try {
+//            isWordValid = (checkIfWordInListLinear(thisWord) && checkLetterNum(thisWord));
+//        } catch (FileNotFoundException e) {
+//            System.out.println("Status: " + "Unable to find file: " + VALID_WORDS_LIST_STORE);
+//        }
+//        return isWordValid;
+//    }
 
     // EFFECTS: returns true if both the valid english word and letter number conditions of the word are satisfied,
     // else false
@@ -154,22 +154,22 @@ public class Game implements Writable {
     }
 
     // EFFECTS: returns true if given word is found in the eligible word list. Else false
-    public boolean checkIfWordInListLinear(String thisWord) throws FileNotFoundException {
-        boolean isWordInList = false;
-        Scanner scan = new Scanner(VALID_WORDS_LIST_STORE);
-        while (scan.hasNext()) {
-            String validWord = scan.nextLine().toLowerCase();
-            if (validWord.equals(thisWord)) {
-                isWordInList = true;
-            }
-        }
-        return isWordInList;
-    }
+//    public boolean checkIfWordInListLinear(String thisWord) throws FileNotFoundException {
+//        boolean isWordInList = false;
+//        Scanner scan = new Scanner(VALID_WORDS_LIST_STORE);
+//        while (scan.hasNext()) {
+//            String validWord = scan.nextLine().toLowerCase();
+//            if (validWord.equals(thisWord)) {
+//                isWordInList = true;
+//            }
+//        }
+//        return isWordInList;
+//    }
 
     // EFFECTS: returns true if given word is found in the eligible word list. Else false. Binary search
     public boolean checkIfWordInList(String thisWord) {
         int result = Collections.binarySearch(validWords, thisWord);
-        System.out.println(result);
+        //System.out.println(result);
         return result > -1;
     }
 
