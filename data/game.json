@@ -1,25 +1,21 @@
 {
-    "score": 44,
+    "score": 90,
     "word entries": [
         {
-            "word value": 10,
-            "word": "mark"
+            "word value": 22,
+            "word": "quiz"
         },
         {
-            "word value": 10,
-            "word": "wolf"
+            "word value": 24,
+            "word": "buzz"
         },
         {
-            "word value": 10,
-            "word": "mike"
+            "word value": 15,
+            "word": "zaps"
         },
         {
-            "word value": 4,
-            "word": "lore"
-        },
-        {
-            "word value": 10,
-            "word": "milk"
+            "word value": 29,
+            "word": "jazz"
         }
     ]
 }

@@ -1,1 +1,124 @@
-{"high score": 81}
+{
+    "high score": 90,
+    "games": [
+        {
+            "score": 90,
+            "name": "Resham",
+            "word entries": [
+                {
+                    "word value": 22,
+                    "word": "quiz"
+                },
+                {
+                    "word value": 24,
+                    "word": "buzz"
+                },
+                {
+                    "word value": 15,
+                    "word": "zaps"
+                },
+                {
+                    "word value": 29,
+                    "word": "jazz"
+                }
+            ]
+        },
+        {
+            "score": 68,
+            "name": "Alex",
+            "word entries": [
+                {
+                    "word value": 22,
+                    "word": "quiz"
+                },
+                {
+                    "word value": 24,
+                    "word": "buzz"
+                },
+                {
+                    "word value": 12,
+                    "word": "muck"
+                },
+                {
+                    "word value": 10,
+                    "word": "milk"
+                }
+            ]
+        },
+        {
+            "score": 65,
+            "name": "Alex",
+            "word entries": [
+                {
+                    "word value": 22,
+                    "word": "quiz"
+                },
+                {
+                    "word value": 24,
+                    "word": "buzz"
+                },
+                {
+                    "word value": 4,
+                    "word": "ills"
+                },
+                {
+                    "word value": 10,
+                    "word": "monk"
+                },
+                {
+                    "word value": 5,
+                    "word": "lord"
+                }
+            ]
+        },
+        {
+            "score": 60,
+            "name": "Alex",
+            "word entries": [
+                {
+                    "word value": 24,
+                    "word": "buzz"
+                },
+                {
+                    "word value": 22,
+                    "word": "quiz"
+                },
+                {
+                    "word value": 7,
+                    "word": "saws"
+                },
+                {
+                    "word value": 7,
+                    "word": "brag"
+                }
+            ]
+        },
+        {
+            "score": 57,
+            "name": "Resham",
+            "word entries": [
+                {
+                    "word value": 8,
+                    "word": "crab"
+                },
+                {
+                    "word value": 10,
+                    "word": "wolf"
+                },
+                {
+                    "word value": 8,
+                    "word": "kill"
+                },
+                {
+                    "word value": 9,
+                    "word": "waps"
+                },
+                {
+                    "word value": 22,
+                    "word": "quiz"
+                }
+            ]
+        }
+    ],
+    "last player name": "Resham"
+}

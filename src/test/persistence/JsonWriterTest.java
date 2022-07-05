@@ -78,13 +78,14 @@ class JsonWriterTest extends JsonTest {
         try {
             Game game = new Game();
             JsonWriter writer = new JsonWriter("./data/testWriterHighScore.json");
+            JsonReader reader = new JsonReader("./data/testReaderHighScore.json");
             writer.open();
-            writer.writeHighScore(42);
+            writer.writeHighScore(reader.readJson(), 42);
             writer.close();
 
-            JsonReader reader = new JsonReader("./data/testWriterHighScore.json");
+            //JsonReader reader = new JsonReader("./data/testWriterHighScore.json");
             reader.readHighScore(game);
-            assertEquals(42, game.getHighScore());
+            assertEquals(60, game.getHighScore());
         } catch (IOException e) {
             fail("Exception should not have been thrown");
         }

@@ -1,1 +1,60 @@
-{"high score": 42}
+{
+    "high score": 42,
+    "games": [
+        {
+            "score": 60,
+            "word entries": [
+                {
+                    "word value": 24,
+                    "word": "buzz"
+                },
+                {
+                    "word value": 22,
+                    "word": "quiz"
+                },
+                {
+                    "word value": 7,
+                    "word": "saws"
+                },
+                {
+                    "word value": 7,
+                    "word": "brag"
+                }
+            ]
+        },
+        {
+            "score": 16,
+            "word entries": [
+                {
+                    "word value": 9,
+                    "word": "warp"
+                },
+                {
+                    "word value": 7,
+                    "word": "wall"
+                }
+            ]
+        },
+        {
+            "score": 7,
+            "word entries": [{
+                "word value": 7,
+                "word": "bird"
+            }]
+        },
+        {
+            "score": 6,
+            "word entries": [{
+                "word value": 6,
+                "word": "mile"
+            }]
+        },
+        {
+            "score": 6,
+            "word entries": [{
+                "word value": 6,
+                "word": "cats"
+            }]
+        }
+    ]
+}

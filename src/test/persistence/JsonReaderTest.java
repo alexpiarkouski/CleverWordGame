@@ -43,7 +43,7 @@ class JsonReaderTest extends JsonTest {
         Game game = new Game();
         try {
             reader.readHighScore(game);
-            assertEquals(42, game.getHighScore());
+            assertEquals(60, game.getHighScore());
         } catch (IOException e) {
             fail("Couldn't read from file");
         }

@@ -1,6 +1,7 @@
 package persistence;
 
 import model.Game;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 
@@ -11,7 +12,7 @@ import java.io.*;
 public class JsonWriter {
     private static final int TAB = 4;
     private PrintWriter writer;
-    private String destination;
+    private final String destination;
 
     // From WorkRoomApp
     // EFFECTS: constructs writer to write to destination file
@@ -35,10 +36,28 @@ public class JsonWriter {
         saveToFile(json.toString(TAB));
     }
 
-    public void writeHighScore(int highScore) {
-        JSONObject json = new JSONObject();
+    public void writeHighScore(JSONObject json, int highScore) {
         json.put("high score", highScore);
         saveToFile(json.toString(TAB));
+    }
+
+    public void writeLeaderboard(Game game, JSONObject jsonObject, int index) {
+        jsonObject.put("last player name", game.getLastPlayerName());
+        JSONArray jsonArrayGames = jsonObject.getJSONArray("games");
+        putAtIndex(index, game.toJson(), jsonArrayGames);
+        if (jsonArrayGames.length() > 5) {
+            for (int i = jsonArrayGames.length(); i > 5; i--) {
+                jsonArrayGames.remove(jsonArrayGames.length() - 1);
+            }
+        }
+        saveToFile(jsonObject.toString(TAB));
+    }
+
+    private void putAtIndex(int index, JSONObject jsonObject, JSONArray jsonArray) {
+        for (int i = jsonArray.length(); i > index; i--) {
+            jsonArray.put(i, jsonArray.get(i - 1));
+        }
+        jsonArray.put(index, jsonObject);
     }
 
     // From WorkRoomApp

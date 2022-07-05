@@ -13,7 +13,6 @@ public class WordEntry implements Writable {
     public WordEntry(String thisWord, int thisWordValue) {
         word = thisWord;
         wordValue = thisWordValue;
-
     }
 
     //EFFECTS: Returns total point value of characters in the word in a wordEntry

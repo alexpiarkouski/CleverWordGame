@@ -18,15 +18,19 @@ public class Game implements Writable {
     private int highScore;
     private int attempts;
     private int letterNum;
+    private String lastPlayerName;
     private List<WordEntry> wordEntries;
+    private List<LeaderboardEntry> leaderboardEntries;
     private List<String> validWords;
 
     // EFFECTS: new game is created. Score set to 0, empty word entries list.
     public Game() {
-        wordEntries = new ArrayList<>();
         score = 0;
         attempts = 5;
         letterNum = 4;
+        lastPlayerName = "";
+        wordEntries = new ArrayList<>();
+        leaderboardEntries = new ArrayList<>();
         try {
             txtToList(VALID_WORDS_LIST_STORE);
         } catch (FileNotFoundException e) {
@@ -178,6 +182,7 @@ public class Game implements Writable {
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("score", score);
+        json.put("name", lastPlayerName);
         json.put("word entries", wordEntriesToJson());
         return json;
     }
@@ -210,6 +215,10 @@ public class Game implements Writable {
                 + wordEntry.getWordValue() + " added to list of valid entries"));
     }
 
+    public void addLeaderboardEntry(LeaderboardEntry entry) {
+        leaderboardEntries.add(entry);
+    }
+
     // REQUIRES: score is a nonnegative integer
     // EFFECTS: returns point score
     public int getScore() {
@@ -233,6 +242,11 @@ public class Game implements Writable {
         return wordEntries;
     }
 
+    // EFFECTS: returns high score
+    public List<LeaderboardEntry> getLeaderboardEntryList() {
+        return leaderboardEntries;
+    }
+
     // EFFECTS: sets high score to highScoreValue
     public void setHighScore(int highScoreValue) {
         highScore = highScoreValue;
@@ -242,6 +256,7 @@ public class Game implements Writable {
     public int getHighScore() {
         return highScore;
     }
+
 
     // MODIFIES: EventLog
     // EFFECTS: logs new event when game is reset
@@ -253,5 +268,25 @@ public class Game implements Writable {
     // EFFECTS: logs new event when game is loaded from file
     public void logGameLoad() {
         EventLog.getInstance().logEvent(new Event("Game loaded from file. List of valid entries reset"));
+    }
+
+    public int findLeaderboardPositionIndex() {
+        if (score > leaderboardEntries.get(leaderboardEntries.size() - 1).getScore()) {
+            for (int i = leaderboardEntries.size() - 1; i > 0; i--) {
+                if (score < leaderboardEntries.get(i - 1).getScore()) {
+                    return i;
+                }
+            }
+            return 0;
+        }
+        return -1;
+    }
+
+    public void setLastPlayerName(String name) {
+        lastPlayerName = name;
+    }
+
+    public String getLastPlayerName() {
+        return lastPlayerName;
     }
 }

@@ -4,6 +4,7 @@ import model.Event;
 import model.EventLog;
 import model.Game;
 import model.WordEntry;
+import org.json.JSONObject;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
@@ -15,6 +16,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Objects;
 
 // Clever Word Game app
 public class WordGame extends JPanel implements ActionListener {
@@ -29,6 +31,7 @@ public class WordGame extends JPanel implements ActionListener {
     private static final int GREAT_SCORE_CUTOFF = 40;
     private static final int WIDTH = 550;
     private static final int HEIGHT = 225;
+//  private static final boolean isResizable = false;
 
     private Game game;
     private JsonWriter jsonWriter;
@@ -79,17 +82,13 @@ public class WordGame extends JPanel implements ActionListener {
             }
         };
 
-        //initTopLevelPanel();
         topLevelPanel = new JPanel();
         topLevelPanel.setLayout(new BoxLayout(topLevelPanel, BoxLayout.LINE_AXIS));
         //topLevelPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
         initJson();
         initMenuButtonPanel();
-        //initEntryListPanel();
-        //initTextFieldPanel();
         initGamePanel();
-        //initResultsPanel();
 
         frame.add(topLevelPanel);
 
@@ -99,9 +98,8 @@ public class WordGame extends JPanel implements ActionListener {
         frame.setLayout(new FlowLayout(FlowLayout.CENTER));
         frame.addWindowListener(windowAdapter);
 
-        //Display the window.
         frame.setSize(WIDTH, HEIGHT);
-        //frame.setResizable(false);
+        frame.setResizable(false);
         frame.setVisible(true);
         textField.requestFocusInWindow();
     }
@@ -130,8 +128,6 @@ public class WordGame extends JPanel implements ActionListener {
 
         topLevelPanel.add(menuButtonPanel);
         topLevelPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-
-
     }
 
     // modified from TellerApp and WorkRoomApp
@@ -149,9 +145,6 @@ public class WordGame extends JPanel implements ActionListener {
     private void initGamePanel() {
         JPanel gameStatusPanel = new JPanel();
         JPanel gamePanel = new JPanel();
-        //makeEnterButton();
-
-        //scoreLabel = new JLabel("Current Score: " + game.getScore());
 
         statusLabel = new JLabel("<html>" + "New game started. " + "<br/>"
                 + "Enter a " + game.getLetterNum() + "-letter word");
@@ -167,8 +160,6 @@ public class WordGame extends JPanel implements ActionListener {
         gameStatusPanel.setLayout(new BoxLayout(gameStatusPanel, BoxLayout.PAGE_AXIS));
         gameStatusPanel.add(gamePanel);
         gameStatusPanel.add(statusLabel);
-        //gamePanel.add(enterButton);
-        //gamePanel.add(scoreLabel);
 
         topLevelPanel.add(gameStatusPanel);
     }
@@ -254,6 +245,90 @@ public class WordGame extends JPanel implements ActionListener {
         return resultsPanel;
     }
 
+    // REQUIRES: attempts >=0
+    // EFFECTS: executes and prints the gameplay interface. Prints number of attempts left,
+    // and whether input word is valid or not
+    private void playGame() {
+        accessMenuButtonsInGame(false);
+        String word = textField.getText();
+        if (!(game.checkIfWordValid(word))) {
+            game.enterInvalidWord();
+            Toolkit.getDefaultToolkit().beep();
+            textField.selectAll();
+            statusLabel.setText("Invalid Word");
+        } else {
+            if (game.getWordEntryList().isEmpty()) {
+                resultsListModel.removeAllElements();
+            }
+            game.enterValidWord(word);
+            resultsListModel.addElement(word);
+            refreshScore();
+            textField.setText("");
+            statusLabel.setText("Valid Word");
+        }
+        textField.requestFocusInWindow();
+        attemptsLabel.setText("Attempts: " + game.getAttempts());
+        statusLabel.setText("<html>" + statusLabel.getText()
+                + "<br/>" + "Enter a " + game.getLetterNum() + "-letter word" + "<html>");
+        if (game.getAttempts() == 0) {
+            endGameRoutine();
+        }
+    }
+
+    // EFFECTS: calls game dialogue with varying images depending on score value and shows final game set
+    private void endGameRoutine() {
+        resultsTitleLabel.setText("Results");
+        statusLabel.setText("<html>" + "Game over!" + "<br/>" + "Reset to play again");
+        getWordEntries();
+        int leaderboardPosIndex = game.findLeaderboardPositionIndex();
+        //textField.setFocusable(false);
+        resetButton.requestFocusInWindow();
+        enterButton.setEnabled(false);
+        accessMenuButtonsInGame(true);
+        int score = game.getScore();
+        if (leaderboardPosIndex != -1) {
+            saveLeaderboardEntry(leaderboardPosIndex);
+            leaderboardRoutine(score);
+        }
+        if (score < GOOD_SCORE_CUTOFF) {
+            endGameDialogue("Game over. Your final score is ", iconBad);
+        } else if (score < GREAT_SCORE_CUTOFF) {
+            endGameDialogue("Good job! Your final score is ", iconGood);
+        } else {
+            endGameDialogue("Great job. Your final score is ", iconGreat);
+        }
+    }
+
+    private void leaderboardRoutine(int score) {
+        if (score > game.getHighScore()) {
+            saveHighScore(score);
+            endGameInputDialogue("<html>" + "Wow! New high score! Will save it at " + JSON_STORE_HIGH_SCORE
+                    + "<br/>" + " Your final score is ", iconGreat);
+        } else {
+            endGameInputDialogue("<html>" + "Wow! Made it on the leaderboard. Entry will save at "
+                    + JSON_STORE_HIGH_SCORE + "<br/>" + " Your final score is ", iconGreat);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: creates end game dialogue window with score, text and image
+    private void endGameDialogue(String message, ImageIcon icon) {
+        JOptionPane.showMessageDialog(frame,
+                message + game.getScore(),
+                "Game Over!",
+                JOptionPane.INFORMATION_MESSAGE,
+                icon);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: creates end game dialogue window with score, text and image
+    private void endGameInputDialogue(String message, ImageIcon icon) {
+        String playerName = (String) JOptionPane.showInputDialog(frame, message + game.getScore() + "<html>" + "<br/>"
+                        + "Enter player name:", "Leaderboard Name Selection",
+                JOptionPane.QUESTION_MESSAGE, icon, null, game.getLastPlayerName());
+        game.setLastPlayerName(playerName);
+    }
+
     // Modified from WorkRoomApp
     // MODIFIES: JSON_SCORE
     // EFFECTS: saves game to file
@@ -297,93 +372,47 @@ public class WordGame extends JPanel implements ActionListener {
         }
     }
 
+    private JSONObject loadLeaderboard() {
+        try {
+            return jsonReaderHighScore.readJson();
+        } catch (IOException e) {
+            statusLabel.setText("Unable to read leaderboard game from file: " + JSON_STORE_HIGH_SCORE);
+        }
+        return null;
+    }
+
     // MODIFIES: game.json high score
     // EFFECTS: saves high score to file
     private void saveHighScore(int highScore) {
+        game.setHighScore(highScore);
+        JSONObject jsonObject = loadLeaderboard();
         try {
             jsonWriterHighScore.open();
-            jsonWriterHighScore.writeHighScore(highScore);
+            jsonWriterHighScore.writeHighScore(Objects.requireNonNull(jsonObject), highScore);
             jsonWriterHighScore.close();
         } catch (FileNotFoundException e) {
             statusLabel.setText("Unable to save to file: " + JSON_STORE_HIGH_SCORE);
         }
     }
 
+    private void saveLeaderboardEntry(int index) {
+        JSONObject jsonObject = loadLeaderboard();
+        try {
+            jsonWriterHighScore.open();
+            if (jsonObject != null) {
+                jsonWriterHighScore.writeLeaderboard(game, jsonObject, index);
+            }
+            jsonWriterHighScore.close();
+        } catch (IOException e) {
+            statusLabel.setText("Unable to write to file: " + JSON_STORE_HIGH_SCORE);
+        }
+    }
+
+
     // EFFECTS: displays word entries from the previous game
     private void lastSet() {
-        //resultsTitleLabel.setText("Last valid game set ");
         statusLabel.setText("Last final score is: " + game.getScore());
         getWordEntries();
-    }
-
-    // EFFECTS: displays point score from the previous game
-//    private void lastScore() {
-//        statusLabel.setText("Last final score is: " + game.getScore());
-//    }
-
-    // REQUIRES: attempts >=0
-    // EFFECTS: executes and prints the gameplay interface. Prints number of attempts left,
-    // and whether input word is valid or not
-    private void playGame() {
-        accessMenuButtonsInGame(false);
-        String word = textField.getText();
-        if (!(game.checkIfWordValid(word))) {
-            game.enterInvalidWord();
-            statusLabel.setText("Invalid Word");
-            Toolkit.getDefaultToolkit().beep();
-            textField.requestFocusInWindow();
-            textField.selectAll();
-        } else {
-            if (game.getWordEntryList().isEmpty()) {
-                resultsListModel.removeAllElements();
-            }
-            game.enterValidWord(word);
-            resultsListModel.addElement(word);
-            refreshScore();
-            textField.setText("");
-            textField.requestFocusInWindow();
-            statusLabel.setText("Valid Word");
-        }
-        attemptsLabel.setText("Attempts: " + game.getAttempts());
-        statusLabel.setText("<html>" + statusLabel.getText()
-                        + "<br/>" + "Enter a " + game.getLetterNum() + "-letter word" + "<html>");
-        if (game.getAttempts() == 0) {
-            endGameMessage();
-            //textField.setFocusable(false);
-            resetButton.requestFocusInWindow();
-            enterButton.setEnabled(false);
-            accessMenuButtonsInGame(true);
-            //resultsTitleLabel.setText("Results");
-        }
-    }
-
-    // EFFECTS: calls game dialogue with varying images depending on score value and shows final game set
-    private void endGameMessage() {
-        resultsTitleLabel.setText("Results");
-        getWordEntries();
-        if (game.getScore() < GOOD_SCORE_CUTOFF) {
-            endGameDialogue("Game over. Your final score is ", iconBad);
-        } else if (game.getScore() < GREAT_SCORE_CUTOFF) {
-            endGameDialogue("Good job! Your final score is ", iconGood);
-        } else if (game.getScore() > game.getHighScore()) {
-            saveHighScore(game.getScore());
-            game.setHighScore(game.getScore());
-            endGameDialogue("<html>" + "Wow! New high score! Saved it at " + JSON_STORE_HIGH_SCORE
-                            + "<br/>" + " Your final score is ", iconGreat);
-        } else {
-            endGameDialogue("Great job. Your final score is ", iconGreat);
-        }
-    }
-
-    // MODIFIES: this
-    // EFFECTS: creates end game dialogue window with score, text and image
-    private void endGameDialogue(String message, ImageIcon icon) {
-        JOptionPane.showMessageDialog(frame,
-                message + game.getScore(),
-                "Game Over!",
-                JOptionPane.INFORMATION_MESSAGE,
-                icon);
-        statusLabel.setText("<html>" + "Game over!" + "<br/>" + "Reset to play again");
     }
 
     // EFFECTS: displays recorded word entries
@@ -403,7 +432,6 @@ public class WordGame extends JPanel implements ActionListener {
 
     // EFFECTS: Sets whether menu buttons are enabled equal to onOffStatus (excluding reset button)
     private void accessMenuButtonsInGame(boolean onOffStatus) {
-        //scoreButton.setEnabled(onOffStatus);
         lastSetButton.setEnabled(onOffStatus);
         saveButton.setEnabled(onOffStatus);
         loadButton.setEnabled(onOffStatus);
@@ -427,17 +455,10 @@ public class WordGame extends JPanel implements ActionListener {
             textField.requestFocusInWindow();
             statusLabel.setText("<html>" + "New game started. " + "<br/>"
                     + "Enter a " + game.getLetterNum() + "-letter word");
+            loadHighScore();
             refreshScore();
         });
     }
-
-    // Modified from Traffic Light Project
-    // EFFECTS: Creates a last score button and defines associated action - display last score
-//    private void makeScoreButton() {
-//        scoreButton = new JButton("Last Score");
-//        scoreButton.setActionCommand("score");
-//        scoreButton.addActionListener(e -> lastScore());
-//    }
 
     // Modified from Traffic Light Project
     // EFFECTS: Creates a last game set button and defines associated action - display last game set
