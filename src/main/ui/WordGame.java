@@ -1,9 +1,7 @@
 package ui;
 
+import model.*;
 import model.Event;
-import model.EventLog;
-import model.Game;
-import model.WordEntry;
 import org.json.JSONObject;
 import persistence.JsonReader;
 import persistence.JsonWriter;
@@ -49,6 +47,7 @@ public class WordGame extends JPanel implements ActionListener {
     private JButton enterButton;
     private JButton resetButton;
     private JButton lastSetButton;
+    private JButton leaderboardButton;
     private JButton saveButton;
     private JButton loadButton;
 
@@ -113,19 +112,19 @@ public class WordGame extends JPanel implements ActionListener {
         menuButtonPanel.setLayout(new BoxLayout(menuButtonPanel, BoxLayout.PAGE_AXIS));
 
         makeResetButton();
-        //makeScoreButton();
         makeLastSetButton();
+        makeLeaderboardButton();
         makeSaveButton();
         makeLoadButton();
 
         menuButtonPanel.add(resetButton);
-        menuButtonPanel.add(Box.createRigidArea(new Dimension(10, 10)));
-        //menuButtonPanel.add(scoreButton);
-        //menuButtonPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+        menuButtonPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         menuButtonPanel.add(lastSetButton);
-        menuButtonPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+        menuButtonPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        menuButtonPanel.add(leaderboardButton);
+        menuButtonPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         menuButtonPanel.add(saveButton);
-        menuButtonPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+        menuButtonPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         menuButtonPanel.add(loadButton);
 
         topLevelPanel.add(menuButtonPanel);
@@ -330,6 +329,32 @@ public class WordGame extends JPanel implements ActionListener {
         game.setLastPlayerName(playerName);
     }
 
+    private void leaderboardDialog() {
+        String[] columnNames = {"Place", "Score", "Name"};
+        int numEntries = game.getLeaderboardEntryList().size();
+        Object[][] data = new Object[numEntries][3];
+        for (int i = 0; i < numEntries; i++) {
+            LeaderboardEntry entry = game.getLeaderboardEntryList().get(i);
+            data[i][0] = i + 1;
+            data[i][1] = entry.getScore();
+            data[i][2] = entry.getName();
+        }
+        JTable table = new JTable(data, columnNames);
+
+        JPanel leaderboardPanel = new JPanel();
+        leaderboardPanel.setLayout(new BoxLayout(leaderboardPanel, BoxLayout.PAGE_AXIS));
+
+        JLabel highScoreLabel = new JLabel("High score: " + game.getHighScore());
+        leaderboardPanel.add(highScoreLabel);
+        leaderboardPanel.add(table.getTableHeader());
+        leaderboardPanel.add(table);
+
+        highScoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JOptionPane.showMessageDialog(frame, leaderboardPanel,"Leaderboard", JOptionPane.PLAIN_MESSAGE);
+
+    }
+
     // Modified from WorkRoomApp
     // MODIFIES: JSON_SCORE
     // EFFECTS: saves game to file
@@ -469,6 +494,14 @@ public class WordGame extends JPanel implements ActionListener {
         lastSetButton = new JButton("Last Game Set");
         lastSetButton.setActionCommand("last_set");
         lastSetButton.addActionListener(e -> lastSet());
+    }
+
+    // Modified from Traffic Light Project
+    // EFFECTS: Creates a leaderboard button and defines associated action - display leaderboard dialog
+    private void makeLeaderboardButton() {
+        leaderboardButton = new JButton("Leaderboard");
+        leaderboardButton.setActionCommand("leaderboard");
+        leaderboardButton.addActionListener(e -> leaderboardDialog());
     }
 
     // Modified from Traffic Light Project
