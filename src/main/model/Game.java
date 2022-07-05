@@ -13,7 +13,6 @@ import java.util.Scanner;
 // Represents a Clever Word Game round
 public class Game implements Writable {
 
-    private static final File VALID_WORDS_LIST_STORE = new File("./data/words_alpha_sorted.txt");
     private int score;
     private int highScore;
     private int attempts;
@@ -31,11 +30,6 @@ public class Game implements Writable {
         lastPlayerName = "";
         wordEntries = new ArrayList<>();
         leaderboardEntries = new ArrayList<>();
-        try {
-            txtToList(VALID_WORDS_LIST_STORE);
-        } catch (FileNotFoundException e) {
-            System.out.println("Status: " + "Unable to find file: " + VALID_WORDS_LIST_STORE);
-        }
     }
 
     public void txtToList(File file) throws FileNotFoundException {
@@ -47,25 +41,6 @@ public class Game implements Writable {
             validWords.add(validWord);
         }
         scan.close();
-//        Collections.sort(validWords);
-//        String outputFile = "words_alpha_sorted.txt";
-//        FileWriter fileWriter = null;
-//        try {
-//            fileWriter = new FileWriter(outputFile);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        PrintWriter out = new PrintWriter(fileWriter);
-//        for (String outputLine : validWords) {
-//            out.println(outputLine);
-//        }
-//        out.flush();
-//        out.close();
-//        try {
-//            fileWriter.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
     // REQUIRES: attempts >= 1

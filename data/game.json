@@ -1,21 +1,26 @@
 {
-    "score": 90,
+    "score": 38,
+    "name": "Resham",
     "word entries": [
         {
-            "word value": 22,
-            "word": "quiz"
+            "word value": 10,
+            "word": "bulk"
         },
         {
-            "word value": 24,
-            "word": "buzz"
+            "word value": 8,
+            "word": "mice"
         },
         {
-            "word value": 15,
-            "word": "zaps"
+            "word value": 8,
+            "word": "word"
         },
         {
-            "word value": 29,
-            "word": "jazz"
+            "word value": 6,
+            "word": "cats"
+        },
+        {
+            "word value": 6,
+            "word": "dogs"
         }
     ]
 }

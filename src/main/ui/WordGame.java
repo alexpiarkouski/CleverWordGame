@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Objects;
@@ -24,14 +25,14 @@ public class WordGame extends JPanel implements ActionListener {
     // Some fields modified from WorkRoomApp and Traffic Light problem
     private static final String JSON_STORE = "./data/game.json";
     private static final String JSON_STORE_HIGH_SCORE = "./data/highscore.json";
+    private static final File VALID_WORDS_LIST_STORE = new File("./data/words_alpha_sorted.txt");
     private static final ImageIcon iconBad = new ImageIcon("./data/icon-bad.gif");
     private static final ImageIcon iconGood = new ImageIcon("./data/icon-good.gif");
     private static final ImageIcon iconGreat = new ImageIcon("./data/icon-great-still.gif");
     private static final int GOOD_SCORE_CUTOFF = 10;
     private static final int GREAT_SCORE_CUTOFF = 40;
-    private static final int WIDTH = 550;
-    private static final int HEIGHT = 225;
-//  private static final boolean isResizable = false;
+    //private static final int WIDTH = 550;
+    //private static final int HEIGHT = 225;
 
     private Game game;
     private JsonWriter jsonWriter;
@@ -47,7 +48,6 @@ public class WordGame extends JPanel implements ActionListener {
 
     private JButton enterButton;
     private JButton resetButton;
-    //private JButton scoreButton;
     private JButton lastSetButton;
     private JButton saveButton;
     private JButton loadButton;
@@ -62,14 +62,15 @@ public class WordGame extends JPanel implements ActionListener {
     // EFFECTS: runs the Word Game app
     // throws FileNotFoundException
     public WordGame() throws FileNotFoundException {
-        runWordGame();
+        game = new Game();
+        new TxtToListWorker().execute();
+        javax.swing.SwingUtilities.invokeLater(this::runWordGame);
     }
 
     // Partially modified from DrawingEditor
     // MODIFIES: this
     // EFFECTS: Creates game window frame, calls methods to initialize app panels, adds panels to frame
     public void runWordGame() {
-        game = new Game();
         frame = new JFrame("Clever Word Game");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         WindowAdapter windowAdapter = new WindowAdapter() {
@@ -98,7 +99,8 @@ public class WordGame extends JPanel implements ActionListener {
         frame.setLayout(new FlowLayout(FlowLayout.CENTER));
         frame.addWindowListener(windowAdapter);
 
-        frame.setSize(WIDTH, HEIGHT);
+        //frame.setSize(WIDTH, HEIGHT);
+        frame.pack();
         frame.setResizable(false);
         frame.setVisible(true);
         textField.requestFocusInWindow();
@@ -286,11 +288,10 @@ public class WordGame extends JPanel implements ActionListener {
         enterButton.setEnabled(false);
         accessMenuButtonsInGame(true);
         int score = game.getScore();
-        if (leaderboardPosIndex != -1) {
+        if (leaderboardPosIndex != -1) {        // score too low to make it on the leaderboard
             saveLeaderboardEntry(leaderboardPosIndex);
             leaderboardRoutine(score);
-        }
-        if (score < GOOD_SCORE_CUTOFF) {
+        } else if (score < GOOD_SCORE_CUTOFF) {
             endGameDialogue("Game over. Your final score is ", iconBad);
         } else if (score < GREAT_SCORE_CUTOFF) {
             endGameDialogue("Good job! Your final score is ", iconGood);
@@ -444,6 +445,7 @@ public class WordGame extends JPanel implements ActionListener {
         resetButton.setActionCommand("reset");
         resetButton.addActionListener(e -> {
             game = new Game();
+            new TxtToListWorker().execute();
             game.logGameReset();
             enterButton.setEnabled(true);
             accessMenuButtonsInGame(true);
@@ -457,6 +459,7 @@ public class WordGame extends JPanel implements ActionListener {
                     + "Enter a " + game.getLetterNum() + "-letter word");
             loadHighScore();
             refreshScore();
+            attemptsLabel.setText("Attempts: " + game.getAttempts());
         });
     }
 
@@ -496,6 +499,18 @@ public class WordGame extends JPanel implements ActionListener {
     // EFFECTS: updates scoreLabel with the latest score
     private void refreshScore() {
         scoreLabel.setText("Current Score: " + game.getScore());
+    }
+
+    class TxtToListWorker extends SwingWorker<Void, Void> {
+        @Override
+        public Void doInBackground() throws FileNotFoundException {
+            try {
+                game.txtToList(VALID_WORDS_LIST_STORE);
+            } catch (FileNotFoundException e) {
+                System.out.println("Status: " + "Unable to find file: " + VALID_WORDS_LIST_STORE);
+            }
+            return null;
+        }
     }
 
     // Required by ActionListener associated with JButton Class
