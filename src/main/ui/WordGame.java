@@ -62,7 +62,11 @@ public class WordGame extends JPanel implements ActionListener {
     // throws FileNotFoundException
     public WordGame() throws FileNotFoundException {
         game = new Game();
+        long startTime = System.nanoTime();
         new TxtToListWorker().execute();
+        long endTime = System.nanoTime();
+
+        System.out.println((endTime - startTime) / 1000000 + "ms");
         javax.swing.SwingUtilities.invokeLater(this::runWordGame);
     }
 
@@ -213,10 +217,6 @@ public class WordGame extends JPanel implements ActionListener {
         JPanel resultsPanel = new JPanel();
 
         resultsTitleLabel = new JLabel("Valid Entries");
-        //statusLabel = new JLabel("<html>" + "New game started. " + "<br/>"
-        //        + game.getAttempts() + " attempts left. " + "<br/>"
-        //        + "Enter a " + game.getLetterNum() + "-letter word");
-
         resultsListModel = new DefaultListModel<>();
         resultsListModel.addElement("<no data>");
         JList<String> resultsList = new JList<>(resultsListModel);
@@ -236,11 +236,6 @@ public class WordGame extends JPanel implements ActionListener {
         resultsPanel.add(Box.createRigidArea(new Dimension(0, 3)));
         resultsPanel.add(listScrollPane);
         resultsPanel.add(Box.createVerticalGlue());
-        //resultsPanel.add(statusLabel);
-        //resultsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-        //topLevelPanel.add(resultsPanel);
-        //topLevelPanel.add(Box.createRigidArea(new Dimension(5, 0)));
         resultsPanel.setAlignmentY(Component.TOP_ALIGNMENT);
 
         return resultsPanel;
@@ -273,10 +268,13 @@ public class WordGame extends JPanel implements ActionListener {
                 + "<br/>" + "Enter a " + game.getLetterNum() + "-letter word" + "<html>");
         if (game.getAttempts() == 0) {
             endGameRoutine();
+            textField.setFocusable(false);
         }
     }
 
-    // EFFECTS: calls game dialogue with varying images depending on score value and shows final game set
+    // MODIFIES: this
+    // EFFECTS: executes end game routine - displays messages and results. If game made it on leaderboard - call
+    // leaderboard routine and save leaderboard entry, if not - call regular end game dialog window
     private void endGameRoutine() {
         resultsTitleLabel.setText("Results");
         statusLabel.setText("<html>" + "Game over!" + "<br/>" + "Reset to play again");
@@ -299,6 +297,7 @@ public class WordGame extends JPanel implements ActionListener {
         }
     }
 
+    // EFFECTS: if historic high score is achieved call saveHighScore; Call endGameInputDialog() with a message
     private void leaderboardRoutine(int score) {
         if (score > game.getHighScore()) {
             saveHighScore(score);
@@ -311,7 +310,7 @@ public class WordGame extends JPanel implements ActionListener {
     }
 
     // MODIFIES: this
-    // EFFECTS: creates end game dialogue window with score, text and image
+    // EFFECTS: creates end game dialogue window with score, text message and image
     private void endGameDialogue(String message, ImageIcon icon) {
         JOptionPane.showMessageDialog(frame,
                 message + game.getScore(),
@@ -320,15 +319,18 @@ public class WordGame extends JPanel implements ActionListener {
                 icon);
     }
 
-    // MODIFIES: this
-    // EFFECTS: creates end game dialogue window with score, text and image
+    // MODIFIES: this, game
+    // EFFECTS: creates end game dialogue window with score, text and image prompting for user name for leaderboard.
     private void endGameInputDialogue(String message, ImageIcon icon) {
-        String playerName = (String) JOptionPane.showInputDialog(frame, message + game.getScore() + "<html>" + "<br/>"
-                        + "Enter player name:", "Leaderboard Name Selection",
+        String playerName = (String) JOptionPane.showInputDialog(frame, message + game.getScore()
+                        + "<html>" + "<br/>" + "Enter player name:", "Leaderboard Name Selection",
                 JOptionPane.QUESTION_MESSAGE, icon, null, game.getLastPlayerName());
         game.setLastPlayerName(playerName);
     }
 
+    // MODIFIES: this
+    // EFFECTS: fetches 2d array with leaderboard data from game,
+    // creates and shows leaderboard dialogue window with high score, leaderboard table.
     private void leaderboardDialog() {
         String[] columnNames = {"Place", "Score", "Name"};
         int numEntries = game.getLeaderboardEntryList().size();
@@ -346,6 +348,7 @@ public class WordGame extends JPanel implements ActionListener {
 
         JLabel highScoreLabel = new JLabel("High score: " + game.getHighScore());
         leaderboardPanel.add(highScoreLabel);
+        leaderboardPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         leaderboardPanel.add(table.getTableHeader());
         leaderboardPanel.add(table);
 
@@ -355,11 +358,11 @@ public class WordGame extends JPanel implements ActionListener {
 
     }
 
-    // Modified from WorkRoomApp
     // MODIFIES: JSON_SCORE
     // EFFECTS: saves game to file
     private void saveGame() {
         try {
+            game.logGameSave();
             jsonWriter.open();
             jsonWriter.write(game);
             jsonWriter.close();
@@ -369,7 +372,6 @@ public class WordGame extends JPanel implements ActionListener {
         }
     }
 
-    // Modified from WorkRoomApp
     // MODIFIES: this
     // EFFECTS: loads game from file
     private void loadGame() {
@@ -377,7 +379,6 @@ public class WordGame extends JPanel implements ActionListener {
             game.logGameLoad();
             game = jsonReader.read();
             statusLabel.setText("Loaded game with score " + game.getScore() + " from " + JSON_STORE);
-            //refreshScore();
             resultsListModel.removeAllElements();
             resultsListModel.addElement("<no data>");
             resultsTitleLabel.setText("Valid Entries");
@@ -478,7 +479,7 @@ public class WordGame extends JPanel implements ActionListener {
             resultsListModel.removeAllElements();
             resultsListModel.addElement("<no data>");
             textField.setText("");
-            //textField.setFocusable(true);
+            textField.setFocusable(true);
             textField.requestFocusInWindow();
             statusLabel.setText("<html>" + "New game started. " + "<br/>"
                     + "Enter a " + game.getLetterNum() + "-letter word");
@@ -538,7 +539,11 @@ public class WordGame extends JPanel implements ActionListener {
         @Override
         public Void doInBackground() throws FileNotFoundException {
             try {
+                long startTime = System.nanoTime();
                 game.txtToList(VALID_WORDS_LIST_STORE);
+                long endTime = System.nanoTime();
+
+                System.out.println((endTime - startTime) / 1000000 + "ms");
             } catch (FileNotFoundException e) {
                 System.out.println("Status: " + "Unable to find file: " + VALID_WORDS_LIST_STORE);
             }

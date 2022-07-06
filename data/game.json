@@ -1,26 +1,26 @@
 {
-    "score": 38,
+    "score": 39,
     "name": "Resham",
     "word entries": [
         {
-            "word value": 10,
-            "word": "bulk"
+            "word value": 9,
+            "word": "brew"
         },
         {
             "word value": 8,
-            "word": "mice"
+            "word": "wang"
         },
         {
-            "word value": 8,
-            "word": "word"
-        },
-        {
-            "word value": 6,
-            "word": "cats"
+            "word value": 11,
+            "word": "work"
         },
         {
             "word value": 6,
-            "word": "dogs"
+            "word": "arcs"
+        },
+        {
+            "word value": 5,
+            "word": "land"
         }
     ]
 }

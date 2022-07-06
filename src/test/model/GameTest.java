@@ -109,12 +109,12 @@ class GameTest {
 
         game.enterValidWord("dogs");
 
-        assertEquals(game.checkDuplicates("dogs")
+        assertEquals(game.checkIfWordUnique("dogs")
                 && game.checkIfWordInList("dogs")
                         && game.checkLetterNum("dogs"),
                 game.checkIfWordValid("dogs"));
 
-        assertEquals(game.checkDuplicates("cats")
+        assertEquals(game.checkIfWordUnique("cats")
                         && game.checkIfWordInList("cats")
                         && game.checkLetterNum("cats"),
                 game.checkIfWordValid("cats"));
@@ -143,12 +143,12 @@ class GameTest {
 
     @Test
     void testCheckDuplicates() {
-        assertTrue(game.checkDuplicates("cats"));
+        assertTrue(game.checkIfWordUnique("cats"));
         game.enterValidWord("cats");
-        assertFalse(game.checkDuplicates("cats"));
-        assertTrue(game.checkDuplicates("dogs"));
+        assertFalse(game.checkIfWordUnique("cats"));
+        assertTrue(game.checkIfWordUnique("dogs"));
         game.enterValidWord("dogs");
-        assertFalse(game.checkDuplicates("dogs"));
+        assertFalse(game.checkIfWordUnique("dogs"));
 
     }
 

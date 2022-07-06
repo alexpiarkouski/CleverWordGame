@@ -32,6 +32,8 @@ public class Game implements Writable {
         leaderboardEntries = new ArrayList<>();
     }
 
+    // MODIFIES: this
+    // EFFECTS: Fills ArrayList validWords with Strings of individual words from file
     public void txtToList(File file) throws FileNotFoundException {
         validWords = new ArrayList<>();
         Scanner scan = new Scanner(file);
@@ -61,38 +63,15 @@ public class Game implements Writable {
         attempts--;
     }
 
-
     // MODIFIES: this
     // EFFECTS: word point value is updated for every character's point value in the word and returned
     private int assignWordValue(String word) {
         int wordValue = 0;
         for (int i = 0; i < word.length(); i++) {
             char letter = word.charAt(i);
-            wordValue = wordValue + assignLetterPoints(letter);
+            wordValue += assignLetterPoints(letter);
         }
         return wordValue;
-    }
-
-    // EFFECTS: Returns corresponding point value of each lowercase english letter character
-    public int assignLetterPoints(char letter) {
-        if (letter == 'a' || letter == 'e' || letter == 'i' || letter == 'o' || letter == 'n'
-                || letter == 'r' || letter == 't' || letter == 'l' || letter == 's' || letter == 'u') {
-            return 1;
-        } else if (letter == 'd' || letter == 'g') {
-            return 2;
-        } else if (letter == 'b' || letter == 'c' || letter == 'm' || letter == 'p') {
-            return 3;
-        } else if (letter == 'f' || letter == 'h' || letter == 'v' || letter == 'w' || letter == 'y') {
-            return 4;
-        } else if (letter == 'k') {
-            return 5;
-        } else if (letter == 'j' || letter == 'x') {
-            return 8;
-        } else if (letter == 'q' || letter == 'z') {
-            return 10;
-        } else {
-            return 0;
-        }
     }
 
     // MODIFIES: this
@@ -116,11 +95,11 @@ public class Game implements Writable {
     // EFFECTS: returns true if both the valid english word and letter number conditions of the word are satisfied,
     // else false
     public boolean checkIfWordValid(String thisWord) {
-        return checkIfWordInList(thisWord) && checkLetterNum(thisWord) && checkDuplicates(thisWord);
+        return checkIfWordInList(thisWord) && checkLetterNum(thisWord) && checkIfWordUnique(thisWord);
     }
 
     // EFFECTS: returns true if wordEntries does not contain a word entry with word value that equals thisWord
-    public boolean checkDuplicates(String thisWord) {
+    public boolean checkIfWordUnique(String thisWord) {
         if (wordEntries.isEmpty()) {
             return true;
         }
@@ -152,6 +131,32 @@ public class Game implements Writable {
         return result > -1;
     }
 
+    // EFFECTS: returns true if given word is a non-empty string of correct character length
+    public boolean checkLetterNum(String thisWord) {
+        if (!thisWord.equals("")) {
+            return thisWord.length() == letterNum;
+        }
+        return false;
+    }
+
+
+    // EFFECTS: returns position index of this game on the leaderboard by score comparison.
+    // If there are no leaderboard entries return top place (index of 0). If score < the lowest entry return -1
+    public int findLeaderboardPositionIndex() {
+        if (leaderboardEntries.isEmpty()) {
+            return 0;
+        }
+        if (score > leaderboardEntries.get(leaderboardEntries.size() - 1).getScore()) {
+            for (int i = leaderboardEntries.size() - 1; i > 0; i--) {
+                if (score < leaderboardEntries.get(i - 1).getScore()) {
+                    return i;
+                }
+            }
+            return 0;
+        }
+        return -1;
+    }
+
     // Modified from WorkRoomApp
     @Override
     public JSONObject toJson() {
@@ -174,14 +179,6 @@ public class Game implements Writable {
         return jsonArray;
     }
 
-    // EFFECTS: returns true if given word is a non-empty string of correct character length
-    public boolean checkLetterNum(String thisWord) {
-        if (!thisWord.equals("")) {
-            return thisWord.length() == letterNum;
-        }
-        return false;
-    }
-
     // MODIFIES: this
     // EFFECTS: adds wordEntry into the list of wordEntries
     public void addWordEntry(WordEntry wordEntry) {
@@ -190,8 +187,32 @@ public class Game implements Writable {
                 + wordEntry.getWordValue() + " added to list of valid entries"));
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds entry into the list of leaderboardEntries
     public void addLeaderboardEntry(LeaderboardEntry entry) {
         leaderboardEntries.add(entry);
+    }
+
+    // EFFECTS: Returns corresponding point value of each lowercase english letter character
+    public int assignLetterPoints(char letter) {
+        if (letter == 'a' || letter == 'e' || letter == 'i' || letter == 'o' || letter == 'n'
+                || letter == 'r' || letter == 't' || letter == 'l' || letter == 's' || letter == 'u') {
+            return 1;
+        } else if (letter == 'd' || letter == 'g') {
+            return 2;
+        } else if (letter == 'b' || letter == 'c' || letter == 'm' || letter == 'p') {
+            return 3;
+        } else if (letter == 'f' || letter == 'h' || letter == 'v' || letter == 'w' || letter == 'y') {
+            return 4;
+        } else if (letter == 'k') {
+            return 5;
+        } else if (letter == 'j' || letter == 'x') {
+            return 8;
+        } else if (letter == 'q' || letter == 'z') {
+            return 10;
+        } else {
+            return 0;
+        }
     }
 
     // REQUIRES: score is a nonnegative integer
@@ -232,6 +253,13 @@ public class Game implements Writable {
         return highScore;
     }
 
+    public void setLastPlayerName(String name) {
+        lastPlayerName = name;
+    }
+
+    public String getLastPlayerName() {
+        return lastPlayerName;
+    }
 
     // MODIFIES: EventLog
     // EFFECTS: logs new event when game is reset
@@ -245,23 +273,9 @@ public class Game implements Writable {
         EventLog.getInstance().logEvent(new Event("Game loaded from file. List of valid entries reset"));
     }
 
-    public int findLeaderboardPositionIndex() {
-        if (score > leaderboardEntries.get(leaderboardEntries.size() - 1).getScore()) {
-            for (int i = leaderboardEntries.size() - 1; i > 0; i--) {
-                if (score < leaderboardEntries.get(i - 1).getScore()) {
-                    return i;
-                }
-            }
-            return 0;
-        }
-        return -1;
-    }
-
-    public void setLastPlayerName(String name) {
-        lastPlayerName = name;
-    }
-
-    public String getLastPlayerName() {
-        return lastPlayerName;
+    // MODIFIES: EventLog
+    // EFFECTS: logs new event when game is saved to file
+    public void logGameSave() {
+        EventLog.getInstance().logEvent(new Event("Game saved to file"));
     }
 }
