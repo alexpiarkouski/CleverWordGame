@@ -341,27 +341,69 @@ public class WordGame extends JPanel implements ActionListener {
             data[i][1] = entry.getScore();
             data[i][2] = entry.getName();
         }
-        JTable table = new JTable(data, columnNames);
 
-        JPanel leaderboardPanel = new JPanel();
-        leaderboardPanel.setLayout(new BoxLayout(leaderboardPanel, BoxLayout.PAGE_AXIS));
+        //String[] options = new String[]{"Reset ", "OK"};
+        //JOptionPane.showOptionDialog(frame, leaderboardPanel,"Leaderboard", JOptionPane.OK_CANCEL_OPTION,
+        //        JOptionPane.INFORMATION_MESSAGE, null, options, options[1]);
+        //Create and set up the window.
+        JFrame frame = new JFrame("Leaderboard Reset");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JLabel highScoreLabel = new JLabel("High score: " + Game.getHighScore());
-        leaderboardPanel.add(highScoreLabel);
-        leaderboardPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-        leaderboardPanel.add(table.getTableHeader());
-        leaderboardPanel.add(table);
+        //Create and set up the content pane.
+        final Leaderboard newContentPane = new Leaderboard(frame, data, columnNames);
+        newContentPane.setOpaque(true); //content panes must be opaque
+        frame.setContentPane(newContentPane);
 
-        highScoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        //Make sure the focus goes to the right component
+        //whenever the frame is initially given the focus.
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowActivated(WindowEvent e) {
+                newContentPane.resetFocus();
+            }
+        });
 
-        JOptionPane.showMessageDialog(frame, leaderboardPanel,"Leaderboard", JOptionPane.PLAIN_MESSAGE);
+        //Display the window.
+        frame.pack();
+        frame.setVisible(true);
+        frame.toFront();
+        frame.requestFocus();
+    }
 
+    /**
+     * Create the GUI and show it.  For thread safety,
+     * this method should be invoked from the
+     * event dispatch thread.
+     */
+    private static void createAndShowPW() {
+        //Create and set up the window.
+        JFrame frame = new JFrame("Leaderboard Reset");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        //Create and set up the content pane.
+        final PasswordHandler newContentPane = new PasswordHandler(frame);
+        newContentPane.setOpaque(true); //content panes must be opaque
+        frame.setContentPane(newContentPane);
+
+        //Make sure the focus goes to the right component
+        //whenever the frame is initially given the focus.
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowActivated(WindowEvent e) {
+                newContentPane.resetFocus();
+            }
+        });
+
+        //Display the window.
+        frame.pack();
+        frame.setVisible(true);
+        frame.toFront();
+        frame.requestFocus();
     }
 
     // MODIFIES: JSON_SCORE
     // EFFECTS: saves game to file
     private void saveGame() {
         try {
+            endGameInputDialogue("gg", iconGreat);
             game.logGameSave();
             jsonWriter.open();
             jsonWriter.write(game);
