@@ -8,15 +8,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Arrays;
 
 public class Leaderboard extends JPanel implements ActionListener {
 
-    private JFrame controllingFrame; //needed for dialogs
+    private final JFrame controllingFrame; //needed for dialogs
     private Object[][] data;
-    private String[] columnNames;
-    private static String OK = "ok";
-    private static String RESET = "reset_leaderboard";
+    private final String[]  columnNames;
+    private static final String OK = "ok";
+    private static final String RESET = "reset_leaderboard";
 
     public Leaderboard(JFrame frame, Object[][] data, String[] columnNames) {
         controllingFrame = frame;
@@ -24,12 +23,7 @@ public class Leaderboard extends JPanel implements ActionListener {
         this.columnNames = columnNames;
 
         JTable table = new JTable(data, columnNames);
-        String[] options = new String[]{"Reset ", "OK"};
-
-        //JPanel leaderboardPanel = new JPanel();
-        //controllingFrame.setLayout(new BoxLayout(controllingFrame, BoxLayout.PAGE_AXIS));
-
-
+        //String[] options = new String[]{"Reset ", "OK"};
         JComponent buttonPane = createButtonPanel();
 
         JLabel highScoreLabel = new JLabel("High score: " + Game.getHighScore());
@@ -38,21 +32,10 @@ public class Leaderboard extends JPanel implements ActionListener {
         textPane.add(highScoreLabel);
         textPane.add(table.getTableHeader());
         textPane.add(table);
+        highScoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-//        JButton resetLeaderboard = new JButton("Reset Leaderboard");
-//        resetLeaderboard.setActionCommand("reset_leaderboard");
-//        resetLeaderboard.addActionListener(e -> createAndShowPW());
         add(textPane);
         add(buttonPane);
-
-//        controllingFrame.add(highScoreLabel);
-//        controllingFrame.add(Box.createRigidArea(new Dimension(0, 5)));
-//        controllingFrame.add(table.getTableHeader());
-//        controllingFrame.add(table);
-        //leaderboardPanel.add(resetLeaderboard);
-        //controllingFrame.add(createButtonPanel());
-
-        //highScoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
 
     protected JComponent createButtonPanel() {
@@ -78,12 +61,12 @@ public class Leaderboard extends JPanel implements ActionListener {
      */
     private static void createAndShowPW() {
         //Create and set up the window.
-        JFrame frame = new JFrame("PW");
+        JFrame frame = new JFrame("Leaderboard Reset");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         //Create and set up the content pane.
         final PasswordHandler newContentPane = new PasswordHandler(frame);
-        newContentPane.setOpaque(true); //content panes must be opaque
+        newContentPane.setOpaque(true);
         frame.setContentPane(newContentPane);
 
         //Make sure the focus goes to the right component

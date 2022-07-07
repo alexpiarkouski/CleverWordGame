@@ -342,46 +342,13 @@ public class WordGame extends JPanel implements ActionListener {
             data[i][2] = entry.getName();
         }
 
-        //String[] options = new String[]{"Reset ", "OK"};
-        //JOptionPane.showOptionDialog(frame, leaderboardPanel,"Leaderboard", JOptionPane.OK_CANCEL_OPTION,
-        //        JOptionPane.INFORMATION_MESSAGE, null, options, options[1]);
         //Create and set up the window.
-        JFrame frame = new JFrame("Leaderboard Reset");
+        JFrame frame = new JFrame("Leaderboard");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         //Create and set up the content pane.
         final Leaderboard newContentPane = new Leaderboard(frame, data, columnNames);
-        newContentPane.setOpaque(true); //content panes must be opaque
-        frame.setContentPane(newContentPane);
-
-        //Make sure the focus goes to the right component
-        //whenever the frame is initially given the focus.
-        frame.addWindowListener(new WindowAdapter() {
-            public void windowActivated(WindowEvent e) {
-                newContentPane.resetFocus();
-            }
-        });
-
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-        frame.toFront();
-        frame.requestFocus();
-    }
-
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event dispatch thread.
-     */
-    private static void createAndShowPW() {
-        //Create and set up the window.
-        JFrame frame = new JFrame("Leaderboard Reset");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-        //Create and set up the content pane.
-        final PasswordHandler newContentPane = new PasswordHandler(frame);
-        newContentPane.setOpaque(true); //content panes must be opaque
+        newContentPane.setOpaque(true);
         frame.setContentPane(newContentPane);
 
         //Make sure the focus goes to the right component

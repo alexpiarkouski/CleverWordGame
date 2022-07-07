@@ -8,11 +8,11 @@ import java.util.Arrays;
 
 public class PasswordHandler extends JPanel implements ActionListener {
 
-    private static String OK = "ok";
-    private static String HELP = "help";
+    private static final String OK = "ok";
+    private static final String HELP = "help";
 
-    private JFrame controllingFrame; //needed for dialogs
-    private JPasswordField passwordField;
+    private final JFrame controllingFrame; //needed for dialogs
+    private final JPasswordField passwordField;
 
     public PasswordHandler(JFrame f) {
         controllingFrame = f;
