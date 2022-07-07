@@ -1,8 +1,10 @@
 {
   "high score": 60,
+  "last player name": "Alex",
   "games": [
     {
       "score": 60,
+      "name": "Alex",
       "word entries": [
         {
           "word value": 24,
@@ -24,6 +26,7 @@
     },
     {
       "score": 16,
+      "name": "Alex",
       "word entries": [
         {
           "word value": 9,
@@ -37,6 +40,7 @@
     },
     {
       "score": 7,
+      "name": "Alex",
       "word entries": [{
         "word value": 7,
         "word": "bird"
@@ -44,6 +48,7 @@
     },
     {
       "score": 6,
+      "name": "Alex",
       "word entries": [{
         "word value": 6,
         "word": "mile"
@@ -51,6 +56,7 @@
     },
     {
       "score": 6,
+      "name": "Alex",
       "word entries": [{
         "word value": 6,
         "word": "cats"

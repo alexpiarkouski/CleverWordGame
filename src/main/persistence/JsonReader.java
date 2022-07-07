@@ -34,26 +34,19 @@ public class JsonReader {
     // EFFECTS: reads workroom from file and returns it;
     // throws IOException if an error occurs reading data from file
     public Game read() throws IOException {
-        String jsonData = readFile(source);
-        JSONObject jsonObject = new JSONObject(jsonData);
+        JSONObject jsonObject = readJson();
         return parseGame(jsonObject);
     }
 
     // EFFECTS: reads workroom from file and returns it;
     // throws IOException if an error occurs reading data from file
-    public void readHighScore(Game game) throws IOException {
+    public void readHighScore() throws IOException {
         JSONObject jsonObject = readJson();
 
-        addHighScore(game, jsonObject);
-        addLeaderboardEntries(game, jsonObject);
-        addLastPlayerName(game, jsonObject);
+        addHighScore(jsonObject);
+        addLeaderboardEntries(jsonObject);
+        addLastPlayerName(jsonObject);
     }
-
-    //    public JSONObject readLeaderboard(Game game) throws IOException {
-//        String jsonData = readFile(source);
-//        JSONObject jsonObject = new JSONObject(jsonData);
-//        return jsonObject;
-//    }
 
     // From WorkRoomApp
     // EFFECTS: reads source file as string and returns it
@@ -75,15 +68,6 @@ public class JsonReader {
         addScore(game, jsonObject);
         return game;
     }
-
-//    private JSONObject parseLeaderboard(JSONObject jsonObject, Game game) {
-//
-//        int highScore = jsonObject.getInt("high score");
-//        game.setHighScore(highScore);
-//
-//        JSONArray jsonArrayGames = jsonObject.getJSONArray("games");
-//        return
-//    }
 
     // Modified from WorkRoomApp
     // MODIFIES: game
@@ -117,25 +101,26 @@ public class JsonReader {
         game.updateScore(score);
     }
 
-    private void addLeaderboardEntries(Game game, JSONObject jsonObject) {
+    public void addLeaderboardEntries(JSONObject jsonObject) {
         JSONArray jsonArray = jsonObject.getJSONArray("games");
+        Game.setLeaderboardEntries(new ArrayList<>());
 
         for (Object json : jsonArray) {
             JSONObject nextGame = (JSONObject) json;
             LeaderboardEntry entry = new LeaderboardEntry(nextGame.getInt("score"),
                     nextGame.getString("name"), wordEntriesToArray(nextGame));
-            game.addLeaderboardEntry(entry);
+            Game.addLeaderboardEntry(entry);
         }
     }
 
-    private void addHighScore(Game game, JSONObject jsonObject) {
+    private void addHighScore(JSONObject jsonObject) {
         int highScore = jsonObject.getInt("high score");
-        game.setHighScore(highScore);
+        Game.setHighScore(highScore);
     }
 
-    private void addLastPlayerName(Game game, JSONObject jsonObject) {
+    private void addLastPlayerName(JSONObject jsonObject) {
         String lastPlayerName = jsonObject.getString("last player name");
-        game.setLastPlayerName(lastPlayerName);
+        Game.setLastPlayerName(lastPlayerName);
     }
 
     // Modified from WorkRoomApp

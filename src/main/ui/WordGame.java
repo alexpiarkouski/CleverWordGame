@@ -286,8 +286,8 @@ public class WordGame extends JPanel implements ActionListener {
         accessMenuButtonsInGame(true);
         int score = game.getScore();
         if (leaderboardPosIndex != -1) {        // score too low to make it on the leaderboard
-            saveLeaderboardEntry(leaderboardPosIndex);
             leaderboardRoutine(score);
+            saveLeaderboardEntry(leaderboardPosIndex);
         } else if (score < GOOD_SCORE_CUTOFF) {
             endGameDialogue("Game over. Your final score is ", iconBad);
         } else if (score < GREAT_SCORE_CUTOFF) {
@@ -299,7 +299,7 @@ public class WordGame extends JPanel implements ActionListener {
 
     // EFFECTS: if historic high score is achieved call saveHighScore; Call endGameInputDialog() with a message
     private void leaderboardRoutine(int score) {
-        if (score > game.getHighScore()) {
+        if (score > Game.getHighScore()) {
             saveHighScore(score);
             endGameInputDialogue("<html>" + "Wow! New high score! Will save it at " + JSON_STORE_HIGH_SCORE
                     + "<br/>" + " Your final score is ", iconGreat);
@@ -324,8 +324,8 @@ public class WordGame extends JPanel implements ActionListener {
     private void endGameInputDialogue(String message, ImageIcon icon) {
         String playerName = (String) JOptionPane.showInputDialog(frame, message + game.getScore()
                         + "<html>" + "<br/>" + "Enter player name:", "Leaderboard Name Selection",
-                JOptionPane.QUESTION_MESSAGE, icon, null, game.getLastPlayerName());
-        game.setLastPlayerName(playerName);
+                JOptionPane.QUESTION_MESSAGE, icon, null, Game.getLastPlayerName());
+        Game.setLastPlayerName(playerName);
     }
 
     // MODIFIES: this
@@ -346,7 +346,7 @@ public class WordGame extends JPanel implements ActionListener {
         JPanel leaderboardPanel = new JPanel();
         leaderboardPanel.setLayout(new BoxLayout(leaderboardPanel, BoxLayout.PAGE_AXIS));
 
-        JLabel highScoreLabel = new JLabel("High score: " + game.getHighScore());
+        JLabel highScoreLabel = new JLabel("High score: " + Game.getHighScore());
         leaderboardPanel.add(highScoreLabel);
         leaderboardPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         leaderboardPanel.add(table.getTableHeader());
@@ -393,7 +393,7 @@ public class WordGame extends JPanel implements ActionListener {
     // EFFECTS: loads high score from file
     private void loadHighScore() {
         try {
-            jsonReaderHighScore.readHighScore(game);
+            jsonReaderHighScore.readHighScore();
         } catch (IOException e) {
             statusLabel.setText("Unable to read high score from file: " + JSON_STORE_HIGH_SCORE);
         }
@@ -411,7 +411,7 @@ public class WordGame extends JPanel implements ActionListener {
     // MODIFIES: game.json high score
     // EFFECTS: saves high score to file
     private void saveHighScore(int highScore) {
-        game.setHighScore(highScore);
+        Game.setHighScore(highScore);
         JSONObject jsonObject = loadLeaderboard();
         try {
             jsonWriterHighScore.open();
@@ -426,15 +426,13 @@ public class WordGame extends JPanel implements ActionListener {
         JSONObject jsonObject = loadLeaderboard();
         try {
             jsonWriterHighScore.open();
-            if (jsonObject != null) {
-                jsonWriterHighScore.writeLeaderboard(game, jsonObject, index);
-            }
+            jsonWriterHighScore.writeLeaderboard(game, Objects.requireNonNull(jsonObject), index);
             jsonWriterHighScore.close();
+            jsonReaderHighScore.addLeaderboardEntries(jsonObject);
         } catch (IOException e) {
             statusLabel.setText("Unable to write to file: " + JSON_STORE_HIGH_SCORE);
         }
     }
-
 
     // EFFECTS: displays word entries from the previous game
     private void lastSet() {
@@ -460,6 +458,7 @@ public class WordGame extends JPanel implements ActionListener {
     // EFFECTS: Sets whether menu buttons are enabled equal to onOffStatus (excluding reset button)
     private void accessMenuButtonsInGame(boolean onOffStatus) {
         lastSetButton.setEnabled(onOffStatus);
+        leaderboardButton.setEnabled(onOffStatus);
         saveButton.setEnabled(onOffStatus);
         loadButton.setEnabled(onOffStatus);
     }
@@ -471,7 +470,7 @@ public class WordGame extends JPanel implements ActionListener {
         resetButton.setActionCommand("reset");
         resetButton.addActionListener(e -> {
             game = new Game();
-            new TxtToListWorker().execute();
+            //new TxtToListWorker().execute();
             game.logGameReset();
             enterButton.setEnabled(true);
             accessMenuButtonsInGame(true);
@@ -486,6 +485,7 @@ public class WordGame extends JPanel implements ActionListener {
             loadHighScore();
             refreshScore();
             attemptsLabel.setText("Attempts: " + game.getAttempts());
+            //System.out.println(Game.getValidWordsSize());
         });
     }
 
@@ -535,12 +535,12 @@ public class WordGame extends JPanel implements ActionListener {
         scoreLabel.setText("Current Score: " + game.getScore());
     }
 
-    class TxtToListWorker extends SwingWorker<Void, Void> {
+    static class TxtToListWorker extends SwingWorker<Void, Void> {
         @Override
         public Void doInBackground() throws FileNotFoundException {
             try {
                 long startTime = System.nanoTime();
-                game.txtToList(VALID_WORDS_LIST_STORE);
+                Game.txtToList(VALID_WORDS_LIST_STORE);
                 long endTime = System.nanoTime();
 
                 System.out.println((endTime - startTime) / 1000000 + "ms");

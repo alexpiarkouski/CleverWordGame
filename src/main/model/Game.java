@@ -14,27 +14,27 @@ import java.util.Scanner;
 public class Game implements Writable {
 
     private int score;
-    private int highScore;
+    private static int highScore;
     private int attempts;
     private int letterNum;
-    private String lastPlayerName;
+    private static String lastPlayerName;
     private List<WordEntry> wordEntries;
-    private List<LeaderboardEntry> leaderboardEntries;
-    private List<String> validWords;
+    private static List<LeaderboardEntry> leaderboardEntries;
+    private static List<String> validWords;
 
     // EFFECTS: new game is created. Score set to 0, empty word entries list.
     public Game() {
         score = 0;
         attempts = 5;
         letterNum = 4;
-        lastPlayerName = "";
+        //lastPlayerName = "";
         wordEntries = new ArrayList<>();
-        leaderboardEntries = new ArrayList<>();
+        //leaderboardEntries = new ArrayList<>();
     }
 
     // MODIFIES: this
     // EFFECTS: Fills ArrayList validWords with Strings of individual words from file
-    public void txtToList(File file) throws FileNotFoundException {
+    public static void txtToList(File file) throws FileNotFoundException {
         validWords = new ArrayList<>();
         Scanner scan = new Scanner(file);
         String validWord;
@@ -44,6 +44,14 @@ public class Game implements Writable {
         }
         scan.close();
     }
+
+    public static void setLeaderboardEntries(List<LeaderboardEntry> leaderboardEntries) {
+        Game.leaderboardEntries = leaderboardEntries;
+    }
+
+//    public static int getValidWordsSize() {
+//        return validWords.size();
+//    }
 
     // REQUIRES: attempts >= 1
     // MODIFIES: this
@@ -125,7 +133,7 @@ public class Game implements Writable {
 //    }
 
     // EFFECTS: returns true if given word is found in the eligible word list. Else false. Binary search
-    public boolean checkIfWordInList(String thisWord) {
+    public static boolean checkIfWordInList(String thisWord) {
         int result = Collections.binarySearch(validWords, thisWord);
         //System.out.println(result);
         return result > -1;
@@ -148,7 +156,7 @@ public class Game implements Writable {
         }
         if (score > leaderboardEntries.get(leaderboardEntries.size() - 1).getScore()) {
             for (int i = leaderboardEntries.size() - 1; i > 0; i--) {
-                if (score < leaderboardEntries.get(i - 1).getScore()) {
+                if (score <= leaderboardEntries.get(i - 1).getScore()) {
                     return i;
                 }
             }
@@ -189,7 +197,7 @@ public class Game implements Writable {
 
     // MODIFIES: this
     // EFFECTS: adds entry into the list of leaderboardEntries
-    public void addLeaderboardEntry(LeaderboardEntry entry) {
+    public static void addLeaderboardEntry(LeaderboardEntry entry) {
         leaderboardEntries.add(entry);
     }
 
@@ -244,20 +252,22 @@ public class Game implements Writable {
     }
 
     // EFFECTS: sets high score to highScoreValue
-    public void setHighScore(int highScoreValue) {
+    public static void setHighScore(int highScoreValue) {
         highScore = highScoreValue;
     }
 
     // EFFECTS: returns high score
-    public int getHighScore() {
+    public static int getHighScore() {
         return highScore;
     }
 
-    public void setLastPlayerName(String name) {
+    public static void setLastPlayerName(String name) {
         lastPlayerName = name;
     }
 
-    public String getLastPlayerName() {
+    // REQUIRES: lastPlayerName is an initalized string
+    // EFFECTS: returns name of last player
+    public static String getLastPlayerName() {
         return lastPlayerName;
     }
 

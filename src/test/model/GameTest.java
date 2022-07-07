@@ -1,8 +1,11 @@
 package model;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,6 +14,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class GameTest {
 
     private Game game;
+    static File VALID_WORDS_LIST_STORE = new File("./data/words_alpha_sorted.txt");
+
+    @BeforeAll
+    static void setValidWords() throws FileNotFoundException {
+        Game.txtToList(VALID_WORDS_LIST_STORE);
+    }
+
 
     @BeforeEach
     void setUp() {
@@ -83,53 +93,53 @@ class GameTest {
     }
 
     @Test
-    void testCheckIfWordValid() throws FileNotFoundException {
-        assertEquals(game.checkIfWordInList("cats")
+    void testCheckIfWordValid() {
+        assertEquals(Game.checkIfWordInList("cats")
                         && game.checkLetterNum("cats"),
                 game.checkIfWordValid("cats"));
 
-        assertEquals(game.checkIfWordInList("cat")
+        assertEquals(Game.checkIfWordInList("cat")
                         && game.checkLetterNum("cat"),
                 game.checkIfWordValid("cat"));
 
         assertFalse(game.checkIfWordValid("monkey"));
         assertFalse(game.checkIfWordValid("abcdefghijklmnopqrstuvwxyz"));
 
-        assertEquals(game.checkIfWordInList("9999")
+        assertEquals(Game.checkIfWordInList("9999")
                         && game.checkLetterNum("9999"),
                 game.checkIfWordValid("9999"));
 
-        assertEquals(game.checkIfWordInList("999")
+        assertEquals(Game.checkIfWordInList("999")
                         && game.checkLetterNum("999"),
                 game.checkIfWordValid("999"));
 
-        assertEquals(game.checkIfWordInList("")
+        assertEquals(Game.checkIfWordInList("")
                 && game.checkLetterNum(""),
                 game.checkIfWordValid(""));
 
         game.enterValidWord("dogs");
 
         assertEquals(game.checkIfWordUnique("dogs")
-                && game.checkIfWordInList("dogs")
+                && Game.checkIfWordInList("dogs")
                         && game.checkLetterNum("dogs"),
                 game.checkIfWordValid("dogs"));
 
         assertEquals(game.checkIfWordUnique("cats")
-                        && game.checkIfWordInList("cats")
+                        && Game.checkIfWordInList("cats")
                         && game.checkLetterNum("cats"),
                 game.checkIfWordValid("cats"));
     }
 
     @Test
 
-    void testCheckIfWordInList() throws FileNotFoundException {
-        assertFalse(game.checkIfWordInList(""));
-        assertTrue(game.checkIfWordInList("cat"));
-        assertTrue(game.checkIfWordInList("cats"));
-        assertFalse(game.checkIfWordInList("zzz"));
-        assertFalse(game.checkIfWordInList("2"));
-        assertFalse(game.checkIfWordInList("9999"));
-        assertFalse(game.checkIfWordInList("catz"));
+    void testCheckIfWordInList() {
+        assertFalse(Game.checkIfWordInList(""));
+        assertTrue(Game.checkIfWordInList("cat"));
+        assertTrue(Game.checkIfWordInList("cats"));
+        assertFalse(Game.checkIfWordInList("zzz"));
+        assertFalse(Game.checkIfWordInList("2"));
+        assertFalse(Game.checkIfWordInList("9999"));
+        assertFalse(Game.checkIfWordInList("catz"));
     }
 
     @Test
@@ -171,16 +181,16 @@ class GameTest {
 
     @Test
     void setHighScore() {
-        game.setHighScore(20);
-        assertEquals(20, game.getHighScore());
-        game.setHighScore(30);
-        assertEquals(30, game.getHighScore());
+        Game.setHighScore(20);
+        assertEquals(20, Game.getHighScore());
+        Game.setHighScore(30);
+        assertEquals(30, Game.getHighScore());
     }
 
     @Test
     void getHighScore() {
-        game.setHighScore(20);
-        int highscore = game.getHighScore();
+        Game.setHighScore(20);
+        int highscore = Game.getHighScore();
         assertEquals(20, highscore);
     }
 }

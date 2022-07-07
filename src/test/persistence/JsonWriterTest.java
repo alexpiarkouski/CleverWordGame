@@ -21,7 +21,6 @@ class JsonWriterTest extends JsonTest {
     @Test
     void testWriterInvalidFile() {
         try {
-            Game game = new Game();
             JsonWriter writer = new JsonWriter("./data/my\0illegal:fileName.json");
             writer.open();
             fail("IOException was expected");
@@ -76,7 +75,6 @@ class JsonWriterTest extends JsonTest {
     @Test
     void testWriterHighScore() {
         try {
-            Game game = new Game();
             JsonWriter writer = new JsonWriter("./data/testWriterHighScore.json");
             JsonReader reader = new JsonReader("./data/testReaderHighScore.json");
             writer.open();
@@ -84,8 +82,8 @@ class JsonWriterTest extends JsonTest {
             writer.close();
 
             //JsonReader reader = new JsonReader("./data/testWriterHighScore.json");
-            reader.readHighScore(game);
-            assertEquals(60, game.getHighScore());
+            reader.readHighScore();
+            assertEquals(60, Game.getHighScore());
         } catch (IOException e) {
             fail("Exception should not have been thrown");
         }
