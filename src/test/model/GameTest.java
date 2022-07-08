@@ -24,7 +24,7 @@ class GameTest {
 
     @BeforeEach
     void setUp() {
-        game = new Game();
+        game = new Game(5, 4);
     }
 
     @Test
@@ -48,7 +48,7 @@ class GameTest {
         assertEquals("jxqz", game.getWordEntryList().get(4).getWord());
         assertEquals(36, game.getWordEntryList().get(4).getWordValue());
 
-        Game newGame = new Game();
+        Game newGame = new Game(5, 4);
         newGame.enterValidWord("fhvw");
         assertEquals("fhvw", newGame.getWordEntryList().get(0).getWord());
         assertEquals(16, newGame.getWordEntryList().get(0).getWordValue());
@@ -165,7 +165,7 @@ class GameTest {
     @Test
     void testGetLetterNum() {
         assertEquals(4, game.getLetterNum());
-        Game newGame = new Game();
+        Game newGame = new Game(5, 4);
         assertEquals(4, newGame.getLetterNum());
     }
 

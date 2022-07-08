@@ -63,7 +63,7 @@ public class JsonReader {
     // Modified from WorkRoomApp
     // EFFECTS: parses game from JSON object and returns it
     private Game parseGame(JSONObject jsonObject) {
-        Game game = new Game();
+        Game game = new Game(jsonObject.getInt("attempts"), jsonObject.getInt("letterNum"));
         addWordEntries(game, jsonObject);
         addScore(game, jsonObject);
         return game;
@@ -108,7 +108,9 @@ public class JsonReader {
         for (Object json : jsonArray) {
             JSONObject nextGame = (JSONObject) json;
             LeaderboardEntry entry = new LeaderboardEntry(nextGame.getInt("score"),
-                    nextGame.getString("name"), wordEntriesToArray(nextGame));
+                    nextGame.getString("name")
+                    //, wordEntriesToArray(nextGame)
+            );
             Game.addLeaderboardEntry(entry);
         }
     }

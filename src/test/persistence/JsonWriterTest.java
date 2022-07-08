@@ -32,7 +32,7 @@ class JsonWriterTest extends JsonTest {
     @Test
     void testWriterEmptyGame() {
         try {
-            Game game = new Game();
+            Game game = new Game(5, 4);
             JsonWriter writer = new JsonWriter("./data/testWriterEmptyGame.json");
             writer.open();
             writer.write(game);
@@ -50,7 +50,7 @@ class JsonWriterTest extends JsonTest {
     @Test
     void testWriterGeneralGame() {
         try {
-            Game game = new Game();
+            Game game = new Game(5, 4);
             game.addWordEntry(new WordEntry("cats", 6));
             game.addWordEntry(new WordEntry("aaaa", 4));
             game.updateScore(4+6);

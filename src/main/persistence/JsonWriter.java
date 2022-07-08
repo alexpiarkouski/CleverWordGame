@@ -1,11 +1,13 @@
 package persistence;
 
 import model.Game;
+import model.LeaderboardEntry;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 
 import java.io.*;
+import java.util.ArrayList;
 
 // Adapted from WorkRoomApp
 // Represents a writer that writes JSON representation of workroom to file
@@ -42,7 +44,7 @@ public class JsonWriter {
     }
 
     public void writeLeaderboard(Game game, JSONObject jsonObject, int index) {
-        jsonObject.put("last player name", game.getLastPlayerName());
+        jsonObject.put("last player name", Game.getLastPlayerName());
         JSONArray jsonArrayGames = jsonObject.getJSONArray("games");
         putAtIndex(index, game.toJson(), jsonArrayGames);
         if (jsonArrayGames.length() > 5) {
@@ -51,6 +53,13 @@ public class JsonWriter {
             }
         }
         saveToFile(jsonObject.toString(TAB));
+    }
+
+    public void writeLeaderboardEntry(LeaderboardEntry entry) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("last player name", entry.getName());
+
+        entry.toJson();
     }
 
     private void putAtIndex(int index, JSONObject jsonObject, JSONArray jsonArray) {
@@ -75,4 +84,14 @@ public class JsonWriter {
     }
 
 
+    public void writeResetLeaderboard(JSONObject jsonObject, LeaderboardEntry entry, int length) {
+        jsonObject.put("last player name", entry.getName());
+        jsonObject.put("high score", entry.getScore());
+        JSONArray entries = new JSONArray();
+        for (int i = 0; i < length; i++) {
+            entries.put(entry.toJson());
+        }
+        jsonObject.put("games", entries);
+        saveToFile(jsonObject.toString(TAB));
+    }
 }

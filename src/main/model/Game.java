@@ -23,10 +23,10 @@ public class Game implements Writable {
     private static List<String> validWords;
 
     // EFFECTS: new game is created. Score set to 0, empty word entries list.
-    public Game() {
+    public Game(Integer attempts, Integer letterNum) {
         score = 0;
-        attempts = 5;
-        letterNum = 4;
+        this.attempts = attempts;
+        this.letterNum = letterNum;
         //lastPlayerName = "";
         wordEntries = new ArrayList<>();
         //leaderboardEntries = new ArrayList<>();
@@ -249,6 +249,10 @@ public class Game implements Writable {
     // EFFECTS: returns high score
     public List<LeaderboardEntry> getLeaderboardEntryList() {
         return leaderboardEntries;
+    }
+
+    public void setLeaderboardEntryList(List<LeaderboardEntry> newList) {
+        leaderboardEntries = newList;
     }
 
     // EFFECTS: sets high score to highScoreValue

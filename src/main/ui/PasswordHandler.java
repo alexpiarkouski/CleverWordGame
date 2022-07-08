@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 
+import static ui.WordGame.leaderboardDialog;
+
 public class PasswordHandler extends JPanel implements ActionListener {
 
     private static final String OK = "ok";
@@ -13,9 +15,11 @@ public class PasswordHandler extends JPanel implements ActionListener {
 
     private final JFrame controllingFrame; //needed for dialogs
     private final JPasswordField passwordField;
+    private final JFrame leaderboardFrame;
 
-    public PasswordHandler(JFrame f) {
+    public PasswordHandler(JFrame leaderboardFrame, JFrame f) {
         controllingFrame = f;
+        this.leaderboardFrame = leaderboardFrame;
 
         passwordField = new JPasswordField(10);
         passwordField.setActionCommand(OK);
@@ -58,7 +62,11 @@ public class PasswordHandler extends JPanel implements ActionListener {
             char[] input = passwordField.getPassword();
             if (isPasswordCorrect(input)) {
                 JOptionPane.showMessageDialog(controllingFrame,
-                        "Success! You typed the right password.");
+                        "Success! Leaderboard Reset");
+                controllingFrame.dispose();
+                leaderboardFrame.dispose();
+                WordGame.resetLeaderboard();
+                WordGame.leaderboardDialog();
             } else {
                 Toolkit.getDefaultToolkit().beep();
                 JOptionPane.showMessageDialog(controllingFrame,

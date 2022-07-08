@@ -11,6 +11,7 @@ import java.awt.event.WindowEvent;
 
 public class Leaderboard extends JPanel implements ActionListener {
 
+    //private static JFrame controllingFrame;
     private final JFrame controllingFrame; //needed for dialogs
     private Object[][] data;
     private final String[]  columnNames;
@@ -59,13 +60,13 @@ public class Leaderboard extends JPanel implements ActionListener {
      * this method should be invoked from the
      * event dispatch thread.
      */
-    private static void createAndShowPW() {
+    private void createAndShowPW() {
         //Create and set up the window.
         JFrame frame = new JFrame("Leaderboard Reset");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         //Create and set up the content pane.
-        final PasswordHandler newContentPane = new PasswordHandler(frame);
+        final PasswordHandler newContentPane = new PasswordHandler(controllingFrame, frame);
         newContentPane.setOpaque(true);
         frame.setContentPane(newContentPane);
 

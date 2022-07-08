@@ -1,116 +1,30 @@
 {
-    "high score": 90,
+    "high score": 10,
     "games": [
         {
-            "score": 90,
-            "name": "Resham",
-            "word entries": [
-                {
-                    "word value": 22,
-                    "word": "quiz"
-                },
-                {
-                    "word value": 24,
-                    "word": "buzz"
-                },
-                {
-                    "word value": 15,
-                    "word": "zaps"
-                },
-                {
-                    "word value": 29,
-                    "word": "jazz"
-                }
-            ]
+            "score": 10,
+            "name": "alex",
+            "word entries": [{
+                "word value": 10,
+                "word": "bark"
+            }]
         },
         {
-            "score": 74,
-            "name": "Alex Sr.",
-            "word entries": [
-                {
-                    "word value": 15,
-                    "word": "zaps"
-                },
-                {
-                    "word value": 24,
-                    "word": "buzz"
-                },
-                {
-                    "word value": 29,
-                    "word": "jazz"
-                },
-                {
-                    "word value": 6,
-                    "word": "cats"
-                }
-            ]
+            "score": 0,
+            "name": "---"
         },
         {
-            "score": 69,
-            "name": "Alex",
-            "word entries": [
-                {
-                    "word value": 29,
-                    "word": "jazz"
-                },
-                {
-                    "word value": 24,
-                    "word": "buzz"
-                },
-                {
-                    "word value": 7,
-                    "word": "wars"
-                },
-                {
-                    "word value": 9,
-                    "word": "warp"
-                }
-            ]
+            "score": 0,
+            "name": "---"
         },
         {
-            "score": 69,
-            "name": "Alex Sr.",
-            "word entries": [
-                {
-                    "word value": 29,
-                    "word": "jazz"
-                },
-                {
-                    "word value": 24,
-                    "word": "buzz"
-                },
-                {
-                    "word value": 10,
-                    "word": "mark"
-                },
-                {
-                    "word value": 6,
-                    "word": "dogs"
-                }
-            ]
+            "score": 0,
+            "name": "---"
         },
         {
-            "score": 68,
-            "name": "Alex",
-            "word entries": [
-                {
-                    "word value": 22,
-                    "word": "quiz"
-                },
-                {
-                    "word value": 24,
-                    "word": "buzz"
-                },
-                {
-                    "word value": 12,
-                    "word": "muck"
-                },
-                {
-                    "word value": 10,
-                    "word": "milk"
-                }
-            ]
+            "score": 0,
+            "name": "---"
         }
     ],
-    "last player name": "Alex"
+    "last player name": "alex"
 }

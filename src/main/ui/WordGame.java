@@ -15,6 +15,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 // Clever Word Game app
@@ -32,11 +33,11 @@ public class WordGame extends JPanel implements ActionListener {
     //private static final int WIDTH = 550;
     //private static final int HEIGHT = 225;
 
-    private Game game;
-    private JsonWriter jsonWriter;
-    private JsonReader jsonReader;
-    private JsonWriter jsonWriterHighScore;
-    private JsonReader jsonReaderHighScore;
+    private static Game game;
+    private static JsonWriter jsonWriter;
+    private static JsonReader jsonReader;
+    private static JsonWriter jsonWriterHighScore;
+    private static JsonReader jsonReaderHighScore;
 
     private JFrame frame;
     private JPanel topLevelPanel;
@@ -53,7 +54,7 @@ public class WordGame extends JPanel implements ActionListener {
 
     private JLabel scoreLabel;
     private JLabel attemptsLabel;
-    private JLabel statusLabel;
+    private static JLabel statusLabel;
     private JLabel resultsTitleLabel;
 
 
@@ -61,7 +62,7 @@ public class WordGame extends JPanel implements ActionListener {
     // EFFECTS: runs the Word Game app
     // throws FileNotFoundException
     public WordGame() throws FileNotFoundException {
-        game = new Game();
+        game = new Game(5, 4);
         long startTime = System.nanoTime();
         new TxtToListWorker().execute();
         long endTime = System.nanoTime();
@@ -331,7 +332,7 @@ public class WordGame extends JPanel implements ActionListener {
     // MODIFIES: this
     // EFFECTS: fetches 2d array with leaderboard data from game,
     // creates and shows leaderboard dialogue window with high score, leaderboard table.
-    private void leaderboardDialog() {
+    protected static void leaderboardDialog() {
         String[] columnNames = {"Place", "Score", "Name"};
         int numEntries = game.getLeaderboardEntryList().size();
         Object[][] data = new Object[numEntries][3];
@@ -366,11 +367,33 @@ public class WordGame extends JPanel implements ActionListener {
         frame.requestFocus();
     }
 
+    protected static void resetLeaderboard() {
+        int numEntries = game.getLeaderboardEntryList().size();
+        //Object[][] data = new Object[numEntries][3];
+        ArrayList<LeaderboardEntry> newEntryList = new ArrayList<>();
+        LeaderboardEntry entry = new LeaderboardEntry();
+        for (int i = 0; i < numEntries; i++) {
+            //LeaderboardEntry entry = new LeaderboardEntry();
+            newEntryList.add(entry);
+        }
+
+        JSONObject jsonObject = loadLeaderboard();
+        try {
+            jsonWriterHighScore.open();
+            jsonWriterHighScore.writeResetLeaderboard(Objects.requireNonNull(jsonObject), entry, numEntries);
+            jsonWriterHighScore.close();
+        } catch (FileNotFoundException e) {
+            statusLabel.setText("Unable to save to file: " + JSON_STORE_HIGH_SCORE);
+        }
+        game.setLeaderboardEntryList(newEntryList);
+        Game.setHighScore(entry.getScore());
+    }
+
     // MODIFIES: JSON_SCORE
     // EFFECTS: saves game to file
     private void saveGame() {
         try {
-            endGameInputDialogue("gg", iconGreat);
+            //endGameInputDialogue("gg", iconGreat);
             game.logGameSave();
             jsonWriter.open();
             jsonWriter.write(game);
@@ -408,7 +431,7 @@ public class WordGame extends JPanel implements ActionListener {
         }
     }
 
-    private JSONObject loadLeaderboard() {
+    private static JSONObject loadLeaderboard() {
         try {
             return jsonReaderHighScore.readJson();
         } catch (IOException e) {
@@ -478,7 +501,7 @@ public class WordGame extends JPanel implements ActionListener {
         resetButton = new JButton("Reset");
         resetButton.setActionCommand("reset");
         resetButton.addActionListener(e -> {
-            game = new Game();
+            game = new Game(5, 4);
             //new TxtToListWorker().execute();
             game.logGameReset();
             enterButton.setEnabled(true);

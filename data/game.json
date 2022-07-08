@@ -1,4 +1,8 @@
 {
-    "score": 0,
-    "word entries": []
+    "score": 10,
+    "name": "Alex",
+    "word entries": [{
+        "word value": 10,
+        "word": "bark"
+    }]
 }

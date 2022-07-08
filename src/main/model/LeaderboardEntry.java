@@ -13,17 +13,23 @@ public class LeaderboardEntry implements Writable {
     private List<WordEntry> wordEntries; //points value of all characters in a word
 
     public LeaderboardEntry() {
+        //super(attempts, letterNum);
         score = 0;
         name = "---";
         wordEntries = new ArrayList<>();
     }
 
     // EFFECTS: word is set to thisWord, points value is set to thisWordValue
-    public LeaderboardEntry(int score, String name, List<WordEntry> wordEntries) {
+    public LeaderboardEntry(//int attempts, int letterNum,
+                             int score, String name
+            //, List<WordEntry> wordEntries
+                            ) {
+        //super(attempts, letterNum);
         this.score = score;
         this.name = name;
-        this.wordEntries = wordEntries;
+        //this.wordEntries = wordEntries;
     }
+
 
     //EFFECTS: Returns total point value of characters in the word in a wordEntry
     public int getScore() {
@@ -44,7 +50,7 @@ public class LeaderboardEntry implements Writable {
         JSONObject json = new JSONObject();
         json.put("score", score);
         json.put("name", name);
-        json.put("word entries", wordEntriesToJson());
+        //json.put("word entries", wordEntriesToJson());
         return json;
     }
 
