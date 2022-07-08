@@ -18,6 +18,7 @@ import org.json.*;
 // Represents a reader that reads workroom from JSON data stored in file
 public class JsonReader {
     private final String source;
+    private static final int LOWEST_LETTER_NUM_RECORD = 3;
 
     // From WorkRoomApp
     // EFFECTS: constructs reader to read from source file
@@ -40,12 +41,14 @@ public class JsonReader {
 
     // EFFECTS: reads workroom from file and returns it;
     // throws IOException if an error occurs reading data from file
-    public void readHighScore() throws IOException {
+    public void readHighScore(Game game) throws IOException {
         JSONObject jsonObject = readJson();
+        JSONObject gameLeaderboard = getLeaderboard(game.getLetterNum());
 
-        addHighScore(jsonObject);
-        addLeaderboardEntries(jsonObject);
         addLastPlayerName(jsonObject);
+
+        addHighScore(game);
+        addLeaderboardEntries(game);
     }
 
     // From WorkRoomApp
@@ -63,7 +66,7 @@ public class JsonReader {
     // Modified from WorkRoomApp
     // EFFECTS: parses game from JSON object and returns it
     private Game parseGame(JSONObject jsonObject) {
-        Game game = new Game(jsonObject.getInt("attempts"), jsonObject.getInt("letterNum"));
+        Game game = new Game(jsonObject.getInt("letterNum"));
         addWordEntries(game, jsonObject);
         addScore(game, jsonObject);
         return game;
@@ -101,9 +104,10 @@ public class JsonReader {
         game.updateScore(score);
     }
 
-    public void addLeaderboardEntries(JSONObject jsonObject) {
-        JSONArray jsonArray = jsonObject.getJSONArray("games");
-        Game.setLeaderboardEntries(new ArrayList<>());
+    public void addLeaderboardEntries(Game game) throws IOException {
+        JSONObject jsonLeaderboard = getLeaderboard(game.getLetterNum());
+        JSONArray jsonArray = jsonLeaderboard.getJSONArray("games");
+        game.setLeaderboardEntries(new ArrayList<>());
 
         for (Object json : jsonArray) {
             JSONObject nextGame = (JSONObject) json;
@@ -111,13 +115,14 @@ public class JsonReader {
                     nextGame.getString("name")
                     //, wordEntriesToArray(nextGame)
             );
-            Game.addLeaderboardEntry(entry);
+            game.addLeaderboardEntry(entry);
         }
     }
 
-    private void addHighScore(JSONObject jsonObject) {
-        int highScore = jsonObject.getInt("high score");
-        Game.setHighScore(highScore);
+    private void addHighScore(Game game) throws IOException {
+        JSONObject jsonLeaderboard = getLeaderboard(game.getLetterNum());
+        int highScore = jsonLeaderboard.getInt("high score");
+        game.setHighScore(highScore);
     }
 
     private void addLastPlayerName(JSONObject jsonObject) {
@@ -133,5 +138,11 @@ public class JsonReader {
         int wordValue = jsonObject.getInt("word value");
         WordEntry wordEntry = new WordEntry(word, wordValue);
         game.addWordEntry(wordEntry);
+    }
+
+    public JSONObject getLeaderboard(int letterNum) throws IOException {
+        JSONObject jsonObject = readJson();
+        JSONArray leaderboardArray = jsonObject.getJSONArray("leaderboards");
+        return (JSONObject) leaderboardArray.get(letterNum - LOWEST_LETTER_NUM_RECORD);
     }
 }

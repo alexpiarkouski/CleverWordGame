@@ -14,18 +14,18 @@ import java.util.Scanner;
 public class Game implements Writable {
 
     private int score;
-    private static int highScore;
+    private int highScore;
     private int attempts;
     private int letterNum;
     private static String lastPlayerName;
     private List<WordEntry> wordEntries;
-    private static List<LeaderboardEntry> leaderboardEntries;
+    private List<LeaderboardEntry> leaderboardEntries;
     private static List<String> validWords;
 
     // EFFECTS: new game is created. Score set to 0, empty word entries list.
-    public Game(Integer attempts, Integer letterNum) {
+    public Game(Integer letterNum) {
         score = 0;
-        this.attempts = attempts;
+        attempts = 5;
         this.letterNum = letterNum;
         //lastPlayerName = "";
         wordEntries = new ArrayList<>();
@@ -45,8 +45,8 @@ public class Game implements Writable {
         scan.close();
     }
 
-    public static void setLeaderboardEntries(List<LeaderboardEntry> leaderboardEntries) {
-        Game.leaderboardEntries = leaderboardEntries;
+    public void setLeaderboardEntries(List<LeaderboardEntry> leaderboardEntries) {
+        this.leaderboardEntries = leaderboardEntries;
     }
 
 //    public static int getValidWordsSize() {
@@ -169,6 +169,7 @@ public class Game implements Writable {
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
+        json.put("letterNum", letterNum);
         json.put("score", score);
         json.put("name", lastPlayerName);
         json.put("word entries", wordEntriesToJson());
@@ -197,7 +198,7 @@ public class Game implements Writable {
 
     // MODIFIES: this
     // EFFECTS: adds entry into the list of leaderboardEntries
-    public static void addLeaderboardEntry(LeaderboardEntry entry) {
+    public void addLeaderboardEntry(LeaderboardEntry entry) {
         leaderboardEntries.add(entry);
     }
 
@@ -256,12 +257,12 @@ public class Game implements Writable {
     }
 
     // EFFECTS: sets high score to highScoreValue
-    public static void setHighScore(int highScoreValue) {
+    public void setHighScore(int highScoreValue) {
         highScore = highScoreValue;
     }
 
     // EFFECTS: returns high score
-    public static int getHighScore() {
+    public int getHighScore() {
         return highScore;
     }
 

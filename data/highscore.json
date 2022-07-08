@@ -1,30 +1,118 @@
 {
-    "high score": 10,
-    "games": [
+    "leaderboards": [
         {
-            "score": 10,
-            "name": "alex",
-            "word entries": [{
-                "word value": 10,
-                "word": "bark"
-            }]
+            "high score": 5,
+            "games": [
+                {
+                    "score": 5,
+                    "name": "alex",
+                    "word entries": [{
+                        "word value": 5,
+                        "word": "top"
+                    }]
+                },
+                {
+                    "score": 0,
+                    "name": "---"
+                },
+                {
+                    "score": 0,
+                    "name": "---"
+                },
+                {
+                    "score": 0,
+                    "name": "---"
+                },
+                {
+                    "score": 0,
+                    "name": "---"
+                }
+            ],
+            "letterNum": 3
         },
         {
-            "score": 0,
-            "name": "---"
-        },
-        {
-            "score": 0,
-            "name": "---"
-        },
-        {
-            "score": 0,
-            "name": "---"
-        },
-        {
-            "score": 0,
-            "name": "---"
+            "high score": 60,
+            "games": [
+                {
+                    "score": 60,
+                    "name": "Alex",
+                    "word entries": [
+                        {
+                            "word value": 10,
+                            "word": "mark"
+                        },
+                        {
+                            "word value": 8,
+                            "word": "word"
+                        },
+                        {
+                            "word value": 24,
+                            "word": "buzz"
+                        },
+                        {
+                            "word value": 8,
+                            "word": "wild"
+                        },
+                        {
+                            "word value": 10,
+                            "word": "milk"
+                        }
+                    ]
+                },
+                {
+                    "score": 21,
+                    "name": "Resham",
+                    "word entries": [
+                        {
+                            "word value": 10,
+                            "word": "mike"
+                        },
+                        {
+                            "word value": 11,
+                            "word": "work"
+                        }
+                    ]
+                },
+                {
+                    "score": 18,
+                    "name": "Alex",
+                    "letterNum": 4,
+                    "word entries": [
+                        {
+                            "word value": 10,
+                            "word": "milk"
+                        },
+                        {
+                            "word value": 8,
+                            "word": "wood"
+                        }
+                    ]
+                },
+                {
+                    "score": 14,
+                    "name": "Resham",
+                    "word entries": [
+                        {
+                            "word value": 8,
+                            "word": "kill"
+                        },
+                        {
+                            "word value": 6,
+                            "word": "meat"
+                        }
+                    ]
+                },
+                {
+                    "score": 8,
+                    "name": "Alex",
+                    "word entries": [{
+                        "word value": 8,
+                        "word": "word"
+                    }]
+                }
+            ],
+            "letterNum": 4
         }
     ],
-    "last player name": "alex"
+    "last player name": "Alex"
 }

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 // Adapted from WorkRoomApp
 // Represents a writer that writes JSON representation of workroom to file
 public class JsonWriter {
+    private static final int LOWEST_LETTER_NUM_RECORD = 3;
     private static final int TAB = 4;
     private PrintWriter writer;
     private final String destination;
@@ -38,13 +39,27 @@ public class JsonWriter {
         saveToFile(json.toString(TAB));
     }
 
-    public void writeHighScore(JSONObject json, int highScore) {
-        json.put("high score", highScore);
-        saveToFile(json.toString(TAB));
+    public void writeHighScore(Game game, JSONObject jsonObject, int highScore) {
+        JSONArray leaderboardArray = jsonObject.getJSONArray("leaderboards");
+        int outerIndex = game.getLetterNum() - LOWEST_LETTER_NUM_RECORD;
+        JSONObject jsonLeaderboard = (JSONObject) leaderboardArray.get(outerIndex);
+        jsonLeaderboard.put("high score", highScore);
+        saveToFile(jsonObject.toString(TAB));
     }
 
-    public void writeLeaderboard(Game game, JSONObject jsonObject, int index) {
+    public void writeLeaderboardList(Game game, JSONObject jsonObject, int index) {
         jsonObject.put("last player name", Game.getLastPlayerName());
+        JSONArray leaderboardArray = jsonObject.getJSONArray("leaderboards");
+        int outerIndex = game.getLetterNum() - LOWEST_LETTER_NUM_RECORD;
+        JSONObject jsonLeaderboard = (JSONObject) leaderboardArray.get(outerIndex);
+        jsonLeaderboard = writeLeaderboard(game, jsonLeaderboard, index);
+        //putAtIndex(index, newJsonLeaderboard, leaderboardArray);
+        leaderboardArray.put(outerIndex, jsonLeaderboard);
+        saveToFile(jsonObject.toString(TAB));
+    }
+
+    public JSONObject writeLeaderboard(Game game, JSONObject jsonObject, int index) {
+
         JSONArray jsonArrayGames = jsonObject.getJSONArray("games");
         putAtIndex(index, game.toJson(), jsonArrayGames);
         if (jsonArrayGames.length() > 5) {
@@ -52,15 +67,16 @@ public class JsonWriter {
                 jsonArrayGames.remove(jsonArrayGames.length() - 1);
             }
         }
-        saveToFile(jsonObject.toString(TAB));
+        return jsonObject;
+
     }
 
-    public void writeLeaderboardEntry(LeaderboardEntry entry) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("last player name", entry.getName());
-
-        entry.toJson();
-    }
+//    public void writeLeaderboardEntry(LeaderboardEntry entry) {
+//        JSONObject jsonObject = new JSONObject();
+//        jsonObject.put("last player name", entry.getName());
+//
+//        entry.toJson();
+//    }
 
     private void putAtIndex(int index, JSONObject jsonObject, JSONArray jsonArray) {
         for (int i = jsonArray.length(); i > index; i--) {
@@ -84,14 +100,17 @@ public class JsonWriter {
     }
 
 
-    public void writeResetLeaderboard(JSONObject jsonObject, LeaderboardEntry entry, int length) {
+    public void writeResetLeaderboard(Game game, JSONObject jsonObject, LeaderboardEntry entry, int length) {
         jsonObject.put("last player name", entry.getName());
-        jsonObject.put("high score", entry.getScore());
+        JSONArray leaderboardArray = jsonObject.getJSONArray("leaderboards");
+        int outerIndex = game.getLetterNum() - LOWEST_LETTER_NUM_RECORD;
+        JSONObject jsonLeaderboard = (JSONObject) leaderboardArray.get(outerIndex);
+        jsonLeaderboard.put("high score", entry.getScore());
         JSONArray entries = new JSONArray();
         for (int i = 0; i < length; i++) {
             entries.put(entry.toJson());
         }
-        jsonObject.put("games", entries);
+        jsonLeaderboard.put("games", entries);
         saveToFile(jsonObject.toString(TAB));
     }
 }

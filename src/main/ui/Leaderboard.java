@@ -13,21 +13,17 @@ public class Leaderboard extends JPanel implements ActionListener {
 
     //private static JFrame controllingFrame;
     private final JFrame controllingFrame; //needed for dialogs
-    private Object[][] data;
-    private final String[]  columnNames;
     private static final String OK = "ok";
     private static final String RESET = "reset_leaderboard";
 
-    public Leaderboard(JFrame frame, Object[][] data, String[] columnNames) {
+    public Leaderboard(JFrame frame, Object[][] data, String[] columnNames, Game game) {
         controllingFrame = frame;
-        this.data = data;
-        this.columnNames = columnNames;
 
         JTable table = new JTable(data, columnNames);
         //String[] options = new String[]{"Reset ", "OK"};
         JComponent buttonPane = createButtonPanel();
 
-        JLabel highScoreLabel = new JLabel("High score: " + Game.getHighScore());
+        JLabel highScoreLabel = new JLabel("High score: " + game.getHighScore());
         JPanel textPane = new JPanel();
         textPane.setLayout(new BoxLayout(textPane, BoxLayout.PAGE_AXIS));
         textPane.add(highScoreLabel);

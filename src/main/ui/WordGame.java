@@ -62,7 +62,7 @@ public class WordGame extends JPanel implements ActionListener {
     // EFFECTS: runs the Word Game app
     // throws FileNotFoundException
     public WordGame() throws FileNotFoundException {
-        game = new Game(5, 4);
+        game = new Game(4);
         long startTime = System.nanoTime();
         new TxtToListWorker().execute();
         long endTime = System.nanoTime();
@@ -300,7 +300,7 @@ public class WordGame extends JPanel implements ActionListener {
 
     // EFFECTS: if historic high score is achieved call saveHighScore; Call endGameInputDialog() with a message
     private void leaderboardRoutine(int score) {
-        if (score > Game.getHighScore()) {
+        if (score > game.getHighScore()) {
             saveHighScore(score);
             endGameInputDialogue("<html>" + "Wow! New high score! Will save it at " + JSON_STORE_HIGH_SCORE
                     + "<br/>" + " Your final score is ", iconGreat);
@@ -348,7 +348,7 @@ public class WordGame extends JPanel implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         //Create and set up the content pane.
-        final Leaderboard newContentPane = new Leaderboard(frame, data, columnNames);
+        final Leaderboard newContentPane = new Leaderboard(frame, data, columnNames, game);
         newContentPane.setOpaque(true);
         frame.setContentPane(newContentPane);
 
@@ -377,16 +377,17 @@ public class WordGame extends JPanel implements ActionListener {
             newEntryList.add(entry);
         }
 
-        JSONObject jsonObject = loadLeaderboard();
+        JSONObject jsonObject = loadLeaderboardList();
         try {
             jsonWriterHighScore.open();
-            jsonWriterHighScore.writeResetLeaderboard(Objects.requireNonNull(jsonObject), entry, numEntries);
+            jsonWriterHighScore.writeResetLeaderboard(game, Objects.requireNonNull(jsonObject),
+                    entry, numEntries);
             jsonWriterHighScore.close();
         } catch (FileNotFoundException e) {
             statusLabel.setText("Unable to save to file: " + JSON_STORE_HIGH_SCORE);
         }
         game.setLeaderboardEntryList(newEntryList);
-        Game.setHighScore(entry.getScore());
+        game.setHighScore(entry.getScore());
     }
 
     // MODIFIES: JSON_SCORE
@@ -410,6 +411,7 @@ public class WordGame extends JPanel implements ActionListener {
         try {
             game.logGameLoad();
             game = jsonReader.read();
+            jsonReaderHighScore.readHighScore(game);
             statusLabel.setText("Loaded game with score " + game.getScore() + " from " + JSON_STORE);
             resultsListModel.removeAllElements();
             resultsListModel.addElement("<no data>");
@@ -425,13 +427,22 @@ public class WordGame extends JPanel implements ActionListener {
     // EFFECTS: loads high score from file
     private void loadHighScore() {
         try {
-            jsonReaderHighScore.readHighScore();
+            jsonReaderHighScore.readHighScore(game);
         } catch (IOException e) {
             statusLabel.setText("Unable to read high score from file: " + JSON_STORE_HIGH_SCORE);
         }
     }
 
-    private static JSONObject loadLeaderboard() {
+//    private static JSONObject loadLeaderboard() {
+//        try {
+//            return jsonReaderHighScore.getLeaderboard(game.getLetterNum());
+//        } catch (IOException e) {
+//            statusLabel.setText("Unable to read leaderboard game from file: " + JSON_STORE_HIGH_SCORE);
+//        }
+//        return null;
+//    }
+
+    private static JSONObject loadLeaderboardList() {
         try {
             return jsonReaderHighScore.readJson();
         } catch (IOException e) {
@@ -443,11 +454,11 @@ public class WordGame extends JPanel implements ActionListener {
     // MODIFIES: game.json high score
     // EFFECTS: saves high score to file
     private void saveHighScore(int highScore) {
-        Game.setHighScore(highScore);
-        JSONObject jsonObject = loadLeaderboard();
+        game.setHighScore(highScore);
+        JSONObject jsonObject = loadLeaderboardList();
         try {
             jsonWriterHighScore.open();
-            jsonWriterHighScore.writeHighScore(Objects.requireNonNull(jsonObject), highScore);
+            jsonWriterHighScore.writeHighScore(game, Objects.requireNonNull(jsonObject), highScore);
             jsonWriterHighScore.close();
         } catch (FileNotFoundException e) {
             statusLabel.setText("Unable to save to file: " + JSON_STORE_HIGH_SCORE);
@@ -455,12 +466,12 @@ public class WordGame extends JPanel implements ActionListener {
     }
 
     private void saveLeaderboardEntry(int index) {
-        JSONObject jsonObject = loadLeaderboard();
+        JSONObject jsonObject = loadLeaderboardList();
         try {
             jsonWriterHighScore.open();
-            jsonWriterHighScore.writeLeaderboard(game, Objects.requireNonNull(jsonObject), index);
+            jsonWriterHighScore.writeLeaderboardList(game, Objects.requireNonNull(jsonObject), index);
             jsonWriterHighScore.close();
-            jsonReaderHighScore.addLeaderboardEntries(jsonObject);
+            jsonReaderHighScore.addLeaderboardEntries(game);
         } catch (IOException e) {
             statusLabel.setText("Unable to write to file: " + JSON_STORE_HIGH_SCORE);
         }
@@ -501,7 +512,7 @@ public class WordGame extends JPanel implements ActionListener {
         resetButton = new JButton("Reset");
         resetButton.setActionCommand("reset");
         resetButton.addActionListener(e -> {
-            game = new Game(5, 4);
+            game = new Game(4);
             //new TxtToListWorker().execute();
             game.logGameReset();
             enterButton.setEnabled(true);

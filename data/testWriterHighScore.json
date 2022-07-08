@@ -1,65 +1,117 @@
 {
-    "high score": 42,
-    "games": [
+    "leaderboards": [
         {
-            "score": 60,
-            "name": "Alex",
-            "word entries": [
+            "high score": 5,
+            "games": [
                 {
-                    "word value": 24,
-                    "word": "buzz"
+                    "score": 5,
+                    "name": "alex",
+                    "word entries": [{
+                        "word value": 5,
+                        "word": "top"
+                    }]
                 },
                 {
-                    "word value": 22,
-                    "word": "quiz"
+                    "score": 0,
+                    "name": "---"
                 },
                 {
-                    "word value": 7,
-                    "word": "saws"
+                    "score": 0,
+                    "name": "---"
                 },
                 {
-                    "word value": 7,
-                    "word": "brag"
+                    "score": 0,
+                    "name": "---"
+                },
+                {
+                    "score": 0,
+                    "name": "---"
                 }
-            ]
+            ],
+            "letterNum": 3
         },
         {
-            "score": 16,
-            "name": "Alex",
-            "word entries": [
+            "high score": 60,
+            "games": [
                 {
-                    "word value": 9,
-                    "word": "warp"
+                    "score": 60,
+                    "name": "Alex",
+                    "word entries": [
+                        {
+                            "word value": 10,
+                            "word": "mark"
+                        },
+                        {
+                            "word value": 8,
+                            "word": "word"
+                        },
+                        {
+                            "word value": 24,
+                            "word": "buzz"
+                        },
+                        {
+                            "word value": 8,
+                            "word": "wild"
+                        },
+                        {
+                            "word value": 10,
+                            "word": "milk"
+                        }
+                    ]
                 },
                 {
-                    "word value": 7,
-                    "word": "wall"
+                    "score": 21,
+                    "name": "Resham",
+                    "word entries": [
+                        {
+                            "word value": 10,
+                            "word": "mike"
+                        },
+                        {
+                            "word value": 11,
+                            "word": "work"
+                        }
+                    ]
+                },
+                {
+                    "score": 18,
+                    "name": "Alex",
+                    "letterNum": 4,
+                    "word entries": [
+                        {
+                            "word value": 10,
+                            "word": "milk"
+                        },
+                        {
+                            "word value": 8,
+                            "word": "wood"
+                        }
+                    ]
+                },
+                {
+                    "score": 14,
+                    "name": "Resham",
+                    "word entries": [
+                        {
+                            "word value": 8,
+                            "word": "kill"
+                        },
+                        {
+                            "word value": 6,
+                            "word": "meat"
+                        }
+                    ]
+                },
+                {
+                    "score": 8,
+                    "name": "Alex",
+                    "word entries": [{
+                        "word value": 8,
+                        "word": "word"
+                    }]
                 }
-            ]
-        },
-        {
-            "score": 7,
-            "name": "Alex",
-            "word entries": [{
-                "word value": 7,
-                "word": "bird"
-            }]
-        },
-        {
-            "score": 6,
-            "name": "Alex",
-            "word entries": [{
-                "word value": 6,
-                "word": "mile"
-            }]
-        },
-        {
-            "score": 6,
-            "name": "Alex",
-            "word entries": [{
-                "word value": 6,
-                "word": "cats"
-            }]
+            ],
+            "letterNum": 4
         }
     ],
     "last player name": "Alex"

@@ -1,8 +1,15 @@
 {
-    "score": 10,
+    "score": 18,
     "name": "Alex",
-    "word entries": [{
-        "word value": 10,
-        "word": "bark"
-    }]
+    "letterNum": 4,
+    "word entries": [
+        {
+            "word value": 10,
+            "word": "milk"
+        },
+        {
+            "word value": 8,
+            "word": "wood"
+        }
+    ]
 }

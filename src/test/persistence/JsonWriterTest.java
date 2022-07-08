@@ -32,7 +32,7 @@ class JsonWriterTest extends JsonTest {
     @Test
     void testWriterEmptyGame() {
         try {
-            Game game = new Game(5, 4);
+            Game game = new Game(4);
             JsonWriter writer = new JsonWriter("./data/testWriterEmptyGame.json");
             writer.open();
             writer.write(game);
@@ -50,7 +50,7 @@ class JsonWriterTest extends JsonTest {
     @Test
     void testWriterGeneralGame() {
         try {
-            Game game = new Game(5, 4);
+            Game game = new Game(4);
             game.addWordEntry(new WordEntry("cats", 6));
             game.addWordEntry(new WordEntry("aaaa", 4));
             game.updateScore(4+6);
@@ -75,15 +75,16 @@ class JsonWriterTest extends JsonTest {
     @Test
     void testWriterHighScore() {
         try {
+            Game game = new Game(4);
             JsonWriter writer = new JsonWriter("./data/testWriterHighScore.json");
             JsonReader reader = new JsonReader("./data/testReaderHighScore.json");
             writer.open();
-            writer.writeHighScore(reader.readJson(), 42);
+            writer.writeHighScore(game, reader.readJson(), 60);
             writer.close();
 
             //JsonReader reader = new JsonReader("./data/testWriterHighScore.json");
-            reader.readHighScore();
-            assertEquals(60, Game.getHighScore());
+            reader.readHighScore(game);
+            assertEquals(60, game.getHighScore());
         } catch (IOException e) {
             fail("Exception should not have been thrown");
         }

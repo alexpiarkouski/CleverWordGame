@@ -1,13 +1,15 @@
 {
-    "word entries": [
-        {
-            "word": "aaaa",
-            "word value": 4
-        },
-        {
-            "word": "cats",
-            "word value": 6
-        }
-    ],
-  "score": 10
+  "score": 18,
+  "name": "Alex",
+  "letterNum": 4,
+  "word entries": [
+    {
+      "word value": 10,
+      "word": "milk"
+    },
+    {
+      "word value": 8,
+      "word": "wood"
+    }
+  ]
 }
